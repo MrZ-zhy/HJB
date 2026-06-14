@@ -1,3 +1,9 @@
 
 # 上游项目源码（每个项目是独立 git repo，由本系统就地开发）
 项目/
+
+# Python 引擎工具运行产物（避免污染 git status）
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
