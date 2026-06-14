@@ -13,3 +13,9 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# 本地凭据（由执行引擎注入，绝不入库）
+.env
+.env.local
+*.token
+credentials.*
