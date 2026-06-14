@@ -42,9 +42,25 @@ _TABLE_RE = re.compile(r"^\|\s*(?P<key>[^|]+?)\s*\|\s*(?P<val>.+?)\s*\|$")
 _SEP_RE = re.compile(r"^[\s|:-]+$")
 _H2_RE = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 _CODE_FENCE = "```"
-# 注：value 形如 "...  # 注释" 时才把 # 视为注释；要求 # 紧跟 \s+ 且后跟字母/中文
-# （允许 # 与字母之间有空格；但 # 后跟数字（如 "维护 #3: ..."）则不视为注释）
-_KV_IN_CODE_RE = re.compile(r"^(?P<key>[A-Z_][A-Z0-9_]*)\s*:\s*(?P<val>.+?)(?:\s+#\s*[A-Za-z\u4e00-\u9fff].*)?$")
+# 注：value 形如 "...  ;; 注释" 时才把 ;; 视为注释。
+# 不用 # 是因为 # 会与 value 里的 "#3" "#修复" 等自由文本冲突，触发非贪婪截断 bug。
+# ;; 在 codeblock 里没自然出现，专作 comment marker。
+#
+# 关键陷阱：之前的实现用 (?P<val>.+?)(?:\s+;;.*)?$ 非贪婪匹配，会找**第一个** ;; 截断。
+# 即便换 marker 也无法解决 —— 因为 value 里若含 marker 本身就被误判。
+# 治本方案：value 贪婪匹配整行，然后用 _strip_trailing_comment 找**最后一个** marker 切分。
+_KV_IN_CODE_RE = re.compile(r"^(?P<key>[A-Z_][A-Z0-9_]*)\s*:\s*(?P<rest>.+)$")
+_KV_COMMENT_MARKER_RE = re.compile(r"\s+;;\s+[A-Za-z\u4e00-\u9fff]")
+
+
+def _strip_trailing_comment(rest: str) -> str:
+    """找**最后一个** comment marker 位置并切掉其后的注释。
+    保证 value 中即使含 ;; 也只会被当作"最后那个"才视为注释起点。
+    """
+    matches = list(_KV_COMMENT_MARKER_RE.finditer(rest))
+    if matches:
+        return rest[: matches[-1].start()].rstrip()
+    return rest.rstrip()
 
 
 def _is_artifact_h2(title: str) -> bool:
@@ -74,7 +90,9 @@ def parse_progress(path: Path = PROG_PATH) -> Dict[str, Dict[str, str]]:
         if in_code:
             m = _KV_IN_CODE_RE.match(line.strip())
             if m:
-                sections[current][m.group("key")] = m.group("val").strip()
+                # 贪婪捕获整行后，用 _strip_trailing_comment 找**最后一个** marker 切注释
+                value = _strip_trailing_comment(m.group("rest"))
+                sections[current][m.group("key")] = value
             continue
         m = _H2_RE.match(line)
         if m:
