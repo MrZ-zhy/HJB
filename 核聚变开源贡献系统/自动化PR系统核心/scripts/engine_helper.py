@@ -9,10 +9,18 @@ engine_helper.py - 自动化 PR 系统的核心数据操作工具
 4. 多 commit ping-pong -> 一次 commit 内完成所有更新
 
 【使用方式】
-  python3 engine_helper.py parse                    # 解析进度表 -> JSON
-  python3 engine_helper.py set KEY=VAL [KEY=VAL..]  # 原子更新字段
+  python3 engine_helper.py parse                    # 解析主进度表 -> JSON
+  python3 engine_helper.py set KEY=VAL [KEY=VAL..]  # 原子更新主表字段
   python3 engine_helper.py set-section SECTION KEY=VAL [KEY=VAL..]  # 限定 section
   python3 engine_helper.py heartbeat MSG            # 心跳：更新 + 提交 + push
+  python3 engine_helper.py list-active              # 列活跃项目（来自主表 多项目并进机制 v2.1）
+  python3 engine_helper.py list-queue               # 列未启动队列
+  python3 engine_helper.py add-active NAME REPO [STATE] [PR] [AGE] [LAST_REVIEW] [NEXT_STEP]
+  python3 engine_helper.py update-active NAME KEY=VAL [KEY=VAL..]
+  python3 engine_helper.py remove-from-queue NAME
+  python3 engine_helper.py project-parse NAME       # 解析子进度表 -> JSON
+  python3 engine_helper.py project-get NAME FIELD   # 读子表字段
+  python3 engine_helper.py project-set NAME FIELD=VAL [FIELD=VAL..]  # 原子更新子表字段
 
 【设计原则】
 - 无外部依赖（只用 stdlib）
@@ -436,6 +444,70 @@ def remove_from_queue(name: str, path: Path = PROG_PATH) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────────
+# Per-Project 子进度表（多项目并进机制 v2.1）
+# ─────────────────────────────────────────────────────────────────────
+# 每项目一个 `核聚变开源贡献系统/项目/<name>/进度表.md`（git-tracked，rule #13 满足）。
+# 子表是简化版的进度表：只含 ## 基本信息 / ## 链状开发进度 / ## 检查点 /
+# ## PR 收益与策略反馈 / ## 项目历史 / ## 维护者最近活动。
+# 子表有自己的 ```codeblock``` 操作指令区（每个项目独立）。
+
+PROJECTS_ROOT = REPO_ROOT / "核聚变开源贡献系统" / "项目"
+
+
+def project_progress_path(name: str) -> Path:
+    """子进度表绝对路径：核聚变开源贡献系统/项目/<name>/进度表.md"""
+    return PROJECTS_ROOT / name / "进度表.md"
+
+
+def _read_project_sections(path: Path) -> Tuple[Dict[str, Dict[str, str]], Dict[str, str]]:
+    """复用主表 parse_progress 逻辑（子表结构相同，只是少了 system-level 段）。"""
+    return parse_progress(path)
+
+
+def project_parse(name: str) -> Dict:
+    """读子表 -> 结构化 JSON（同主表 parse 格式）。"""
+    p = project_progress_path(name)
+    if not p.exists():
+        raise FileNotFoundError(f"project sub-progress not found: {p}")
+    return {"name": name, "path": str(p), **_read_project_sections(p)}
+
+
+def project_get(name: str, field: str) -> Optional[str]:
+    """读子表某字段（支持 `基本信息.项目名称` 这种 dotted path，或顶层 `KEY`）。"""
+    data = project_parse(name)
+    # 1) codeblock
+    if field in data.get("_codeblock", {}):
+        return data["_codeblock"][field]
+    # 2) dotted: SECTION.KEY
+    if "." in field:
+        section, key = field.split(".", 1)
+        return data.get(section, {}).get(key)
+    # 3) top-level section dump（少见）：返回首个匹配段里所有 key 的 join
+    return None
+
+
+def project_set(name: str, updates: Dict[str, str]) -> bool:
+    """原子更新子表字段。updates: {KEY: VAL} 或 {SECTION.KEY: VAL} 或 {SECTION: {KEY: VAL}}。
+    返回是否全部更新成功。"""
+    p = project_progress_path(name)
+    if not p.exists():
+        raise FileNotFoundError(f"project sub-progress not found: {p}")
+    flat: Dict[str, str] = {}
+    section_updates: Dict[str, Dict[str, str]] = {}
+    for k, v in updates.items():
+        if "." in k:
+            section, key = k.split(".", 1)
+            section_updates.setdefault(section, {})[key] = v
+        else:
+            flat[k] = v
+    if flat:
+        update_fields(flat, p)
+    for sec, kvs in section_updates.items():
+        update_fields(kvs, p, section=sec)
+    return True
+
+
+# ─────────────────────────────────────────────────────────────────────
 # CLI
 # ─────────────────────────────────────────────────────────────────────
 def _parse_kv(args):
@@ -528,6 +600,43 @@ def main(argv):
             print(f"error: project {argv[2]!r} not in queue", file=sys.stderr)
             return 3
         print(f"ok: removed {argv[2]!r} from queue")
+        return 0
+    if cmd == "project-parse":
+        if len(argv) < 3:
+            print("usage: project-parse NAME", file=sys.stderr)
+            return 2
+        try:
+            data = project_parse(argv[2])
+        except FileNotFoundError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 3
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+        return 0
+    if cmd == "project-get":
+        if len(argv) < 4:
+            print("usage: project-get NAME FIELD", file=sys.stderr)
+            return 2
+        try:
+            v = project_get(argv[2], argv[3])
+        except FileNotFoundError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 3
+        if v is None:
+            print(f"(field {argv[3]!r} not found)", file=sys.stderr)
+            return 4
+        print(v)
+        return 0
+    if cmd == "project-set":
+        if len(argv) < 4:
+            print("usage: project-set NAME KEY=VAL [KEY=VAL..]", file=sys.stderr)
+            return 2
+        updates = _parse_kv(argv[3:])
+        try:
+            project_set(argv[2], updates)
+        except FileNotFoundError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 3
+        print(f"ok: updated project {argv[2]!r}: {list(updates.keys())}")
         return 0
     print(f"unknown cmd: {cmd!r}", file=sys.stderr)
     return 2
