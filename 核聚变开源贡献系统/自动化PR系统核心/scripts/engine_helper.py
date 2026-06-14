@@ -228,6 +228,214 @@ def heartbeat(msg: str = "engine: heartbeat", extra_updates: Optional[Dict] = No
 
 
 # ─────────────────────────────────────────────────────────────────────
+# 多项目并进机制 v2.1
+# ─────────────────────────────────────────────────────────────────────
+# 进度表中：
+#   ## 多项目并进机制 v2.1
+#   ### 活跃项目状态
+#   | 项目 | 仓库 | 状态 | PR | PR 龄期 | 上次 review 检查 | 下一步 |
+#   ### 未启动项目队列
+#   | 顺序 | 项目 | 综合分 | 备注 |
+#
+# 本节函数都基于「多列表格」的简单解析（不依赖 _TABLE_RE 的 2 列假设）。
+
+_ACTIVE_HEADER = ("项目", "仓库", "状态", "PR", "PR 龄期", "上次 review 检查", "下一步")
+_QUEUE_HEADER = ("顺序", "项目", "综合分", "备注")
+
+
+def _read_multicol_section(path: Path, h2_title: str, h3_title: str) -> List[List[str]]:
+    """读 ## h2_title 段下 ### h3_title 子段的多列表格，返回行列表（不含表头/分隔）。"""
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    in_h2 = False
+    in_h3 = False
+    rows: List[List[str]] = []
+    for line in lines:
+        if line.startswith("## ") and h2_title in line:
+            in_h2 = True
+            in_h3 = False
+            continue
+        if in_h2 and line.startswith("### ") and h3_title in line:
+            in_h3 = True
+            continue
+        if in_h2 and line.startswith("### "):
+            in_h3 = False  # 离开了目标子段
+        if in_h2 and line.startswith("## "):
+            break  # 离开 h2 段
+        if not in_h3 or not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        # 跳表头/分隔
+        if not rows and cells and cells[0] in _ACTIVE_HEADER[:1]:
+            continue
+        if cells and re.match(r"^[\s|:-]+$", cells[0]):
+            continue
+        rows.append(cells)
+    return rows
+
+
+def _write_multicol_row(path: Path, h2_title: str, h3_title: str, header: tuple,
+                        match_col: int, match_val: str, new_row: List[str]) -> bool:
+    """在多列表格里按 match_col 匹配 match_val，把该行替换为 new_row。返回是否找到并替换。"""
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    in_h2 = False
+    in_h3 = False
+    found = False
+    out: List[str] = []
+    for line in lines:
+        if line.startswith("## ") and h2_title in line:
+            in_h2 = True
+            in_h3 = False
+            out.append(line)
+            continue
+        if in_h2 and line.startswith("### ") and h3_title in line:
+            in_h3 = True
+            out.append(line)
+            continue
+        if in_h2 and line.startswith("### "):
+            in_h3 = False
+        if in_h2 and line.startswith("## "):
+            in_h2 = False
+        if in_h3 and line.startswith("|"):
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            if (not found
+                and len(cells) > match_col
+                and cells[match_col] == match_val
+                and cells[0] != header[0]  # 不是表头
+                and not re.match(r"^[\s|:-]+$", cells[0])):
+                # 替换
+                out.append("| " + " | ".join(new_row) + " |")
+                found = True
+                continue
+        out.append(line)
+    if found:
+        path.write_text("\n".join(out) + "\n", encoding="utf-8")
+    return found
+
+
+def _append_multicol_row(path: Path, h2_title: str, h3_title: str, new_row: List[str]) -> None:
+    """在多列表格末尾追加一行（找到表头后下一行插入）。"""
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    in_h2 = False
+    in_h3 = False
+    out: List[str] = []
+    last_data_line_idx = -1  # in_h3 段内最后一个数据行的 out 索引
+    for i, line in enumerate(lines):
+        if line.startswith("## ") and h2_title in line:
+            in_h2 = True
+            in_h3 = False
+        if in_h2 and line.startswith("### ") and h3_title in line:
+            in_h3 = True
+        if in_h2 and line.startswith("### ") and h3_title not in line and in_h3:
+            in_h3 = False
+        if in_h2 and line.startswith("## ") and h2_title not in line:
+            in_h2 = False
+        out.append(line)
+        if in_h3 and line.startswith("|") and not re.match(r"^[\s|:-]+$", line.strip("|").split("|")[0] if "|" in line else ""):
+            last_data_line_idx = len(out) - 1
+    if last_data_line_idx >= 0:
+        out.insert(last_data_line_idx + 1, "| " + " | ".join(new_row) + " |")
+    else:
+        out.append("| " + " | ".join(new_row) + " |")
+    path.write_text("\n".join(out) + "\n", encoding="utf-8")
+
+
+def list_active_projects(path: Path = PROG_PATH) -> List[Dict[str, str]]:
+    """列出所有活跃项目。返回 [{项目, 仓库, 状态, PR, PR 龄期, 上次 review 检查, 下一步}, ...]"""
+    rows = _read_multicol_section(path, "多项目并进机制 v2.1", "活跃项目状态")
+    if not rows:
+        return []
+    out = []
+    for r in rows:
+        if len(r) < len(_ACTIVE_HEADER):
+            r = r + [""] * (len(_ACTIVE_HEADER) - len(r))
+        out.append(dict(zip(_ACTIVE_HEADER, r[:len(_ACTIVE_HEADER)])))
+    return out
+
+
+def get_active_project(name: str, path: Path = PROG_PATH) -> Optional[Dict[str, str]]:
+    for p in list_active_projects(path):
+        if p.get("项目", "").strip() == name:
+            return p
+    return None
+
+
+def update_active_project(name: str, updates: Dict[str, str], path: Path = PROG_PATH) -> bool:
+    """更新活跃项目表里指定 name 的若干字段。返回是否找到并更新。"""
+    cur = get_active_project(name, path)
+    if not cur:
+        return False
+    new_row = [cur.get(k, "") for k in _ACTIVE_HEADER]
+    for k, v in updates.items():
+        if k in _ACTIVE_HEADER:
+            new_row[_ACTIVE_HEADER.index(k)] = v
+    return _write_multicol_row(path, "多项目并进机制 v2.1", "活跃项目状态",
+                               _ACTIVE_HEADER, 0, name, new_row)
+
+
+def add_active_project(name: str, repo: str, state: str = "INIT",
+                       pr: str = "—", age: str = "—",
+                       last_review: str = "—", next_step: str = "—",
+                       path: Path = PROG_PATH) -> None:
+    """追加一个活跃项目行。"""
+    if get_active_project(name, path):
+        return  # 已存在
+    row = [name, repo, state, pr, age, last_review, next_step]
+    _append_multicol_row(path, "多项目并进机制 v2.1", "活跃项目状态", row)
+
+
+def list_queue(path: Path = PROG_PATH) -> List[Dict[str, str]]:
+    """列出未启动项目队列。"""
+    rows = _read_multicol_section(path, "多项目并进机制 v2.1", "未启动项目队列")
+    out = []
+    for r in rows:
+        # 过滤表头行
+        if r and r[0] in _QUEUE_HEADER:
+            continue
+        if len(r) < len(_QUEUE_HEADER):
+            r = r + [""] * (len(_QUEUE_HEADER) - len(r))
+        out.append(dict(zip(_QUEUE_HEADER, r[:len(_QUEUE_HEADER)])))
+    return out
+
+
+def remove_from_queue(name: str, path: Path = PROG_PATH) -> bool:
+    """从未启动队列移除指定项目（已晋升为活跃项目时调用）。"""
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    in_h2 = False
+    in_h3 = False
+    out: List[str] = []
+    found = False
+    for line in lines:
+        if line.startswith("## ") and "多项目并进机制 v2.1" in line:
+            in_h2 = True
+            in_h3 = False
+            out.append(line)
+            continue
+        if in_h2 and line.startswith("### ") and "未启动项目队列" in line:
+            in_h3 = True
+            out.append(line)
+            continue
+        if in_h2 and line.startswith("### ") and in_h3:
+            in_h3 = False
+        if in_h2 and line.startswith("## ") and "多项目并进机制 v2.1" not in line:
+            in_h2 = False
+        if in_h3 and line.startswith("|"):
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            if (len(cells) >= 2 and cells[1] == name
+                and not re.match(r"^[\s|:-]+$", cells[0])
+                and cells[0] != "顺序"):
+                found = True
+                continue  # 跳过这行
+        out.append(line)
+    if found:
+        path.write_text("\n".join(out) + "\n", encoding="utf-8")
+    return found
+
+
+# ─────────────────────────────────────────────────────────────────────
 # CLI
 # ─────────────────────────────────────────────────────────────────────
 def _parse_kv(args):
@@ -277,6 +485,50 @@ def main(argv):
         sha = heartbeat(msg)
         print(f"heartbeat: {sha}")
         return 0 if not sha.startswith(("commit_failed", "push_failed")) else 4
+    if cmd == "list-active":
+        projs = list_active_projects()
+        print(json.dumps(projs, ensure_ascii=False, indent=2))
+        return 0
+    if cmd == "list-queue":
+        q = list_queue()
+        print(json.dumps(q, ensure_ascii=False, indent=2))
+        return 0
+    if cmd == "add-active":
+        # add-active NAME REPO [STATE] [PR] [AGE] [LAST_REVIEW] [NEXT_STEP]
+        if len(argv) < 4:
+            print("usage: add-active NAME REPO [STATE] [PR] [AGE] [LAST_REVIEW] [NEXT_STEP]", file=sys.stderr)
+            return 2
+        a = argv[2:]
+        add_active_project(a[0], a[1], a[2] if len(a) > 2 else "INIT",
+                           a[3] if len(a) > 3 else "—",
+                           a[4] if len(a) > 4 else "—",
+                           a[5] if len(a) > 5 else "—",
+                           a[6] if len(a) > 6 else "—")
+        print(f"ok: added active project {a[0]!r}")
+        return 0
+    if cmd == "update-active":
+        # update-active NAME KEY=VAL [KEY=VAL..]
+        if len(argv) < 4:
+            print("usage: update-active NAME KEY=VAL [KEY=VAL..]", file=sys.stderr)
+            return 2
+        name = argv[2]
+        updates = _parse_kv(argv[3:])
+        ok = update_active_project(name, updates)
+        if not ok:
+            print(f"error: project {name!r} not found in active list", file=sys.stderr)
+            return 3
+        print(f"ok: updated active project {name!r}: {list(updates.keys())}")
+        return 0
+    if cmd == "remove-from-queue":
+        if len(argv) < 3:
+            print("usage: remove-from-queue NAME", file=sys.stderr)
+            return 2
+        ok = remove_from_queue(argv[2])
+        if not ok:
+            print(f"error: project {argv[2]!r} not in queue", file=sys.stderr)
+            return 3
+        print(f"ok: removed {argv[2]!r} from queue")
+        return 0
     print(f"unknown cmd: {cmd!r}", file=sys.stderr)
     return 2
 
