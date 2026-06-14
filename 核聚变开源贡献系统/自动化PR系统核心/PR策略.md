@@ -1,5 +1,9 @@
 # PR策略
 
+> **本文件存储在云端**：`MrZ-zhy/HJB` · `trae/solo-agent-TbCBsF` 分支，路径 `/workspace/HJB/核聚变开源贡献系统/自动化PR系统核心/PR策略.md`。
+>
+> 本文件中所有"本地"指"已 clone 到本地工作区的目标上游项目仓库"（即 `/workspace/HJB/项目/<name>/`），与本系统自身文件无关。
+
 ## 贡献类型优先级
 
 > 按AI可完成度和贡献价值排序
