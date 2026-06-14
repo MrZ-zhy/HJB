@@ -42,7 +42,9 @@ _TABLE_RE = re.compile(r"^\|\s*(?P<key>[^|]+?)\s*\|\s*(?P<val>.+?)\s*\|$")
 _SEP_RE = re.compile(r"^[\s|:-]+$")
 _H2_RE = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 _CODE_FENCE = "```"
-_KV_IN_CODE_RE = re.compile(r"^(?P<key>[A-Z_][A-Z0-9_]*)\s*:\s*(?P<val>.+?)(?:\s+#.*)?$")
+# 注：value 形如 "...  # 注释" 时才把 # 视为注释；要求 # 紧跟 \s+ 且后跟字母/中文
+# （允许 # 与字母之间有空格；但 # 后跟数字（如 "维护 #3: ..."）则不视为注释）
+_KV_IN_CODE_RE = re.compile(r"^(?P<key>[A-Z_][A-Z0-9_]*)\s*:\s*(?P<val>.+?)(?:\s+#\s*[A-Za-z\u4e00-\u9fff].*)?$")
 
 
 def _is_artifact_h2(title: str) -> bool:
