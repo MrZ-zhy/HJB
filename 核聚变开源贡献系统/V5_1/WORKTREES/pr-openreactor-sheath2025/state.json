@@ -1,0 +1,313 @@
+{
+  "pr_id": "pr-openreactor-sheath2025",
+  "project": "OpenReactor",
+  "paper_arxiv_id": "sheath2025",
+  "paper_title": "Sheath 2D",
+  "pr_type": "T1",
+  "target_repo": "natesales/openreactor",
+  "target_files": [
+    "pkg/line/line.go"
+  ],
+  "state": "accumulating",
+  "created_at": "2026-06-15T13:08:46.560392Z",
+  "updated_at": "2026-06-15T13:08:46.560461Z",
+  "subtasks": [
+    {
+      "id": "st-001",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "read_paper",
+      "description": "读 arXiv:sheath2025 全文，提取 abstract + 关键贡献",
+      "depends_on": [],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/01-paper-abstract.md"
+      ],
+      "verification": "文件存在且 ≥ 200 字",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-002",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "read_paper",
+      "description": "读 arXiv:sheath2025 的 method/api/specification section，提取可测试 contract",
+      "depends_on": [
+        "st-001"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/02-paper-contract.md"
+      ],
+      "verification": "列出至少 3 个可测试 API/数据结构契约",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-003",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "read_paper",
+      "description": "读 arXiv:sheath2025 的 experimental/validation section，提取参考值/解析解",
+      "depends_on": [
+        "st-001"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/03-paper-reference-values.md"
+      ],
+      "verification": "列出至少 1 个可作为 oracle 的参考值",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-004",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "analyze_code",
+      "description": "读 OpenReactor 项目顶层目录，识别语言、测试框架、CI 配置",
+      "depends_on": [],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/04-code-overview.md"
+      ],
+      "verification": "识别 language + test_framework + ci_tool",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-005",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "analyze_code",
+      "description": "读 OpenReactor 目标源文件，列出所有 public function/class 及其签名",
+      "depends_on": [
+        "st-004"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/05-code-surface.md"
+      ],
+      "verification": "列出 ≥ 5 个 function + 完整签名",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-006",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "cross_check",
+      "description": "交叉对比：paper contract (st-002) vs code surface (st-005)，找出 gap",
+      "depends_on": [
+        "st-002",
+        "st-005"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/06-cross-check.md"
+      ],
+      "verification": "列出 paper 有但 code 无 / paper 无但 code 有 / 双方都有 三类对比",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-007",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "write_test",
+      "description": "写 pkg/test_<module>.py 骨架：import + 1 个 dummy test",
+      "depends_on": [
+        "st-006"
+      ],
+      "status": "pending",
+      "output_files": [
+        "pkg/test_<module>.py"
+      ],
+      "verification": "文件能被 test runner 加载（即使有 skip）",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-008",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "write_test",
+      "description": "为 cross-check 找出的每个 gap 写 1 个 test case",
+      "depends_on": [
+        "st-007"
+      ],
+      "status": "pending",
+      "output_files": [
+        "pkg/test_<module>.py"
+      ],
+      "verification": "每个 gap 对应至少 1 个 test function",
+      "estimated_ticks": 2,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-009",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "write_test",
+      "description": "添加 oracle 断言：每个 test 用 paper 参考值 (st-003) 验证",
+      "depends_on": [
+        "st-003",
+        "st-008"
+      ],
+      "status": "pending",
+      "output_files": [
+        "pkg/test_<module>.py"
+      ],
+      "verification": "每个 test 含 1+ assert 且 oracle 来源标注为 paper",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-010",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "write_docstring",
+      "description": "为目标源文件顶部加 docstring 引用论文 arXiv ID",
+      "depends_on": [
+        "st-005"
+      ],
+      "status": "pending",
+      "output_files": [],
+      "verification": "含 `arXiv:{paper_id}` 字符串",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-011",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "verify_tests",
+      "description": "本地跑 test 套件，全部 PASS",
+      "depends_on": [
+        "st-009"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/11-test-run.log"
+      ],
+      "verification": "exit code 0 + 所有 test passed",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-012",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "verify_lint",
+      "description": "跑 lint + type check，0 error",
+      "depends_on": [
+        "st-010"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/12-lint-run.log"
+      ],
+      "verification": "0 error（warning 可接受）",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-013",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "self_critique",
+      "description": "自我批评：这个 PR 真解决了 paper 提的问题吗？是否有更简洁的写法？",
+      "depends_on": [
+        "st-011",
+        "st-012"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/13-self-critique.md"
+      ],
+      "verification": "包含 3 段：'PR 解决了什么' / '可能的问题' / '改进建议'",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-014",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "write_pr_body",
+      "description": "写 PR description：背景（论文引用）+ 动机（upstream gap）+ 改动 + 验证",
+      "depends_on": [
+        "st-013"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/notes/14-pr-body.md"
+      ],
+      "verification": "含 arXiv ID + 改动文件列表 + 测试结果",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    },
+    {
+      "id": "st-015",
+      "pr_id": "pr-openreactor-sheath2025",
+      "type": "persist",
+      "description": "原子 commit + push (本地，等 READY_TO_SUBMIT 才 push 到 fork)",
+      "depends_on": [
+        "st-014"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-openreactor-sheath2025/state.json"
+      ],
+      "verification": "git log 含 1 个新 commit，state.json 更新",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": ""
+    }
+  ],
+  "quality": {
+    "all_subtasks_done": false,
+    "tests_pass": false,
+    "lint_pass": false,
+    "type_check_pass": false,
+    "self_critique_pass": false,
+    "paper_cited": false,
+    "pr_body_complete": false,
+    "human_approved": false
+  },
+  "notes_dir": "核聚变开源贡献系统/V5_1/WORKTREES/pr-openreactor-sheath2025/notes",
+  "pr_branch": "pr/OpenReactor/sheath2025",
+  "pr_number": null,
+  "pr_url": "",
+  "estimated_total_ticks": 16
+}
