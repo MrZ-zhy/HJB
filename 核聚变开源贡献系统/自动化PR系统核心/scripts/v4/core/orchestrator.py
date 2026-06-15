@@ -171,21 +171,25 @@ def step_state_decide(bus: EventBus, state: EngineState) -> tuple[StepResult, Li
 
 
 def step_execute(bus: EventBus, state: EngineState, actions: List[Action]) -> StepResult:
-    """执行前 N 个 action（V4 单 tick 限制 1 个核心 action + 任意多个 monitor action）。"""
+    """执行 actions。V4 增强：decision_matrix 是 name-based 路由器，对未知 action 兜底。"""
     t0 = time.time()
     executed: List[str] = []
     errors: List[str] = []
     try:
         from ..strategies.base import discover_strategies
+        from ..strategies.decision_matrix import DecisionMatrixStrategy
         strat_map = {s.name: s for s in discover_strategies()}
+        # 显式注入 decision_matrix 作为 fallback router（即使 discover 没拿到）
+        strat_map.setdefault("decision_matrix", DecisionMatrixStrategy())
         for action in actions:
-            if action.name == "monitor" or action.name.startswith("pr_"):
-                # monitor / monitor 类可并发执行
+            if action.name in ("monitor",) or action.name.startswith("pr_"):
+                # monitor / pr 类可并发执行
                 pass
             else:
                 # 核心 action 单选（V4 简化：第一个非 monitor）
                 pass
-            strat = strat_map.get(action.name)
+            # 优先用 action.name 直接找；找不到则用 decision_matrix 路由器
+            strat = strat_map.get(action.name) or strat_map.get("decision_matrix")
             if not strat or not hasattr(strat, "execute"):
                 continue
             try:
@@ -200,8 +204,7 @@ def step_execute(bus: EventBus, state: EngineState, actions: List[Action]) -> St
         )
     except Exception as e:
         return StepResult(
-            step="execute", ok=False,
-            elapsed_ms=int((time.time()-t0)*1000),
+            step="execute", ok=False, elapsed_ms=int((time.time()-t0)*1000),
             error=str(e)
         )
 
