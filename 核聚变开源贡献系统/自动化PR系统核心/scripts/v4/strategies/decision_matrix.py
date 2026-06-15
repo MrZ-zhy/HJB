@@ -334,7 +334,7 @@ class DecisionMatrixStrategy:
         try:
             repo = ProjectProgressRepo()
             now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-            current = repo.get(proj.name) or {}
+            current = repo.try_load(proj.name) or {}
             test_history = current.get("P1_2_TEST_HISTORY", "[]")
             try:
                 import json as _json
@@ -386,7 +386,7 @@ class DecisionMatrixStrategy:
         # 查子表 PLAN（若有外部 agent 写入的 plan 则按 plan 实施）
         try:
             repo = ProjectProgressRepo()
-            current = repo.get(proj.name) or {}
+            current = repo.try_load(proj.name) or {}
             plan_text = current.get("P2_PLAN", "")
         except Exception:
             plan_text = ""
@@ -472,7 +472,7 @@ class DecisionMatrixStrategy:
         # 拿子表 PR 描述
         try:
             repo = ProjectProgressRepo()
-            current = repo.get(proj.name) or {}
+            current = repo.try_load(proj.name) or {}
             title = current.get("P3_TITLE", "")
             body = current.get("P3_BODY", "")
         except Exception:
