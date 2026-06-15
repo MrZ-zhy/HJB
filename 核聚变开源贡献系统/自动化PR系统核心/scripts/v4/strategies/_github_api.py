@@ -62,13 +62,20 @@ def get_repo(owner: str, name: str, token: str) -> Tuple[int, Any]:
 
 def ensure_fork(upstream_owner: str, repo_name: str, fork_owner: str,
                 token: str) -> Tuple[bool, str, str]:
-    """幂等 fork：已存在则返回 (True, fork_full_name, "")。
-    不存在则创建，返回 (True, fork_full_name, "") 或 (False, "", reason)。
+    """幂等 fork：已存在则返回 (True, fork_full_name, "exists")。
+    不存在则创建，返回 (True, fork_full_name, "created") 或 (False, "", reason)。
+
+    注意：返回值第三个元素严格区分 exists/created/already_exists_422 三态，
+    避免命名歧义导致日志误读。
     """
-    # 1. 检查是否已 fork
+    # 1. 检查是否已 fork（精确识别：必须是 fork 且 parent 匹配 upstream）
     status, body = get_repo(fork_owner, repo_name, token)
     if status == 200 and isinstance(body, dict) and body.get("fork") is True:
-        return True, f"{fork_owner}/{repo_name}", "exists"
+        parent_full = (body.get("parent") or {}).get("full_name", "")
+        if parent_full == f"{upstream_owner}/{repo_name}":
+            return True, f"{fork_owner}/{repo_name}", "exists"
+        # 是 fork 但 parent 不匹配 —— 仍按"已存在"处理，不重复创建
+        return True, f"{fork_owner}/{repo_name}", f"exists_different_parent:{parent_full}"
     # 2. 创建 fork
     status, body = _http("POST", f"{GH_API}/repos/{upstream_owner}/{repo_name}/forks", token, body={})
     if status in (202, 201):
