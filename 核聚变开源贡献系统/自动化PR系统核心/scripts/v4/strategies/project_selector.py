@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from ..core.event_bus import EventBus, Events
+from ..core.event_bus import Event, EventBus, Events
 from ..core.models import Action, ContributionState, EngineState
 
 
