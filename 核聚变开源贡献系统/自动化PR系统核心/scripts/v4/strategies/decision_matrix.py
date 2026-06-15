@@ -330,7 +330,7 @@ class DecisionMatrixStrategy:
         bus.emit(Event("code.p1_2.tested",
                        {"project": proj.name, "ok": ok, "reason": reason,
                         "output_tail": output[-500:]}))
-        # 写子表记录测试结果
+        # 写子表记录测试结果 + 推进到 P2.1
         try:
             repo = ProjectProgressRepo()
             now = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -352,7 +352,11 @@ class DecisionMatrixStrategy:
                     f"({reason})"
                 ),
                 "P1_2_TEST_HISTORY": _json.dumps(hist, ensure_ascii=False),
+                "CURRENT_NODE": "P2.1",
+                "PROJECT_STATE": "CODING",
             })
+            bus.emit(Event("code.p1_2.subtable_updated",
+                           {"project": proj.name, "next_node": "P2.1"}))
         except Exception as e:
             bus.emit(Event("code.p1_2.subtable_failed",
                            {"project": proj.name, "error": str(e)[:200]}))
