@@ -75,8 +75,9 @@ V4 统一工作流（engine.py tick 一条命令搞定 7 步）
 
 ```bash
 export GITHUB_TOKEN="<token>"
-export HJB_ROOT="/workspace/HJB"
-cd "$HJB_ROOT/HJB"
+# HJB_ROOT 必须指向内层 git 仓库（orchestrator 用它直接拼 .git 路径）
+export HJB_ROOT="/workspace/HJB/HJB"
+cd "$HJB_ROOT"
 git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/MrZ-zhy/HJB.git"
 git fetch origin
 git checkout trae/solo-agent-TbCBsF
@@ -86,7 +87,7 @@ git pull --rebase origin trae/solo-agent-TbCBsF
 ### Step 1-7: V4 统一入口（一条命令）
 
 ```bash
-cd "$HJB_ROOT/HJB"
+cd "$HJB_ROOT"
 python3 核聚变开源贡献系统/自动化PR系统核心/scripts/v4/engine.py tick 2>&1 | tee /tmp/v4_tick.json
 ```
 
