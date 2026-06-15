@@ -43,7 +43,7 @@ class ProjectSelectorStrategy:
         new_proj = ProjectState(
             name=name,
             repo=action.payload.get("repo", ""),
-            state=ContributionState.INIT,
+            state=ContributionState.BACKLOG,
             current_node="P1.1",
         )
         state.projects.append(new_proj)
