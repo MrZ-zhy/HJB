@@ -163,7 +163,7 @@ def _active_projects_to_state(path: Path = PROG_PATH) -> List[ProjectState]:
 
 
 def _to_state(s: str) -> ContributionState:
-    s = s.strip()
+    s = s.strip().strip("*").strip()  # 兼容 markdown 加粗（**CANCELLED**）
     for st in ContributionState:
         if st.value == s:
             return st
