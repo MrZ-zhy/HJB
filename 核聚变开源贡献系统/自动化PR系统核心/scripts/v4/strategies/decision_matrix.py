@@ -180,7 +180,7 @@ class DecisionMatrixStrategy:
                            {"project": name or "?", "reason": "project not found in active set"}))
             return
         node = proj.current_node or "P1.1"
-        if node == "P1.1":
+        if node == "—" or node == "P1.1":
             self._code_p1_1(state, proj, bus)
         elif node.startswith("P1.2"):
             self._code_p1_2(state, proj, bus)
