@@ -195,3 +195,148 @@ def get_upstream_default_branch(owner: str, name: str, token: str) -> str:
     if status == 200 and isinstance(body, dict):
         return body.get("default_branch", "main") or "main"
     return "main"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# PR 创建 + push 辅助
+# ─────────────────────────────────────────────────────────────────────
+def create_pull_request(head: str, base: str, title: str, body: str,
+                        token: str) -> Tuple[int, Any]:
+    """在 fork owner 账号下对 upstream 创建 PR。
+
+    head 格式: "fork_owner:branch"（如 "MrZ-zhy:contrib/fix-xyz"）。
+    base 格式: upstream 分支名（如 "main"）。
+    """
+    upstream_owner = os.environ.get("HJB_UPSTREAM_OWNER", "google-deepmind")
+    repo_name = os.environ.get("HJB_REPO_NAME", "torax")
+    url = f"{GH_API}/repos/{upstream_owner}/{repo_name}/pulls"
+    return _http("POST", url, token, body={
+        "title": title,
+        "head": head,
+        "base": base,
+        "body": body,
+        "maintainer_can_modify": True,
+    })
+
+
+def push_branch(local_path: str, branch: str, token: str,
+                remote_name: str = "origin") -> Tuple[bool, str]:
+    """把 local 仓库的 branch 推到 remote。失败时返回 (False, stderr)。"""
+    # 先确保 remote url 嵌入 token
+    p = Path(local_path)
+    res = _run_git([
+        "remote", "set-url", remote_name,
+        f"https://x-access-token:{token}@github.com/{_guess_remote_owner(p)}/{_guess_repo_name(p)}.git"
+    ], cwd=p)
+    if res.returncode != 0:
+        return False, f"remote-set-url failed: {res.stderr.strip()[:200]}"
+    res2 = _run_git(["push", "-u", remote_name, branch], cwd=p)
+    if res2.returncode != 0:
+        return False, f"push failed: {res2.stderr.strip()[:300]}"
+    return True, "pushed"
+
+
+def _guess_remote_owner(local_path: Path) -> str:
+    """从 .git/config 解析 origin url 的 owner（用于 push 时的 url 嵌入 token）。"""
+    cfg = local_path / ".git" / "config"
+    if not cfg.exists():
+        return FORK_OWNER
+    try:
+        import re
+        text = cfg.read_text(errors="replace")
+        m = re.search(r'\[remote "origin"\][^\[]*url\s*=\s*[^\n]*github\.com[:/]([^/]+)/', text)
+        if m:
+            return m.group(1)
+    except Exception:
+        pass
+    return FORK_OWNER
+
+
+def _guess_repo_name(local_path: Path) -> str:
+    """从 .git/config 解析 origin url 的 repo 名。"""
+    cfg = local_path / ".git" / "config"
+    if not cfg.exists():
+        return local_path.name
+    try:
+        import re
+        text = cfg.read_text(errors="replace")
+        m = re.search(r'\[remote "origin"\][^\[]*url\s*=\s*[^\n]*github\.com[:/][^/]+/([^/\n]+?)(?:\.git)?\s*$', text, re.M)
+        if m:
+            return m.group(1)
+    except Exception:
+        pass
+    return local_path.name
+
+
+def checkout_new_branch(local_path: str, branch: str,
+                       base: str = "main") -> Tuple[bool, str]:
+    """基于 base 创建并 checkout 新分支。"""
+    p = Path(local_path)
+    # 1. 先 fetch 一下（如果 remote 不存在则跳过）
+    _run_git(["fetch", "origin", base], cwd=p)
+    # 2. 切回 base
+    res = _run_git(["checkout", base], cwd=p)
+    if res.returncode != 0:
+        return False, f"checkout base {base} failed: {res.stderr.strip()[:200]}"
+    # 3. 创建并切到新分支
+    res2 = _run_git(["checkout", "-b", branch], cwd=p)
+    if res2.returncode != 0:
+        return False, f"checkout -b {branch} failed: {res2.stderr.strip()[:200]}"
+    return True, "ok"
+
+
+def commit_all(local_path: str, message: str) -> Tuple[bool, str, str]:
+    """add -A + commit。返回 (ok, sha, stderr)。"""
+    p = Path(local_path)
+    res = _run_git(["add", "-A"], cwd=p)
+    if res.returncode != 0:
+        return False, "", f"git add failed: {res.stderr.strip()[:200]}"
+    res2 = _run_git(["commit", "-m", message], cwd=p)
+    if res2.returncode != 0:
+        return False, "", f"git commit failed: {res2.stderr.strip()[:200]}"
+    sha = _run_git(["rev-parse", "--short", "HEAD"], cwd=p).stdout.strip()
+    return True, sha, ""
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 测试执行辅助
+# ─────────────────────────────────────────────────────────────────────
+def run_python_tests(local_path: str, test_paths: Optional[List[str]] = None,
+                     timeout: int = 120) -> Tuple[bool, str, str]:
+    """在 local 仓库跑 pytest。返回 (ok, combined_output, reason)。
+
+    test_paths 缺省 = 'torax'（按项目约定）。
+    失败 = pytest 退出码非 0 或超时。仅捕获输出（>50KB 截断）。
+    """
+    p = Path(local_path)
+    args = ["python3", "-m", "pytest", "-x", "-q", "--no-header", "--tb=short"]
+    if test_paths:
+        args.extend(test_paths)
+    else:
+        args.append("torax")
+    try:
+        res = subprocess.run(
+            args, cwd=str(p), capture_output=True, text=True, timeout=timeout
+        )
+        out = (res.stdout or "")[-2000:] + "\n---STDERR---\n" + (res.stderr or "")[-1000:]
+        if res.returncode == 0:
+            return True, out, "tests_passed"
+        return False, out, f"pytest_exit_{res.returncode}"
+    except subprocess.TimeoutExpired:
+        return False, "", f"pytest_timeout_{timeout}s"
+    except FileNotFoundError:
+        return False, "", "pytest_not_installed"
+    except Exception as e:
+        return False, "", f"pytest_error: {str(e)[:200]}"
+
+
+def list_open_pull_requests(owner: str, name: str, token: str,
+                            head_branch: str = "") -> List[Dict[str, Any]]:
+    """列出 owner/name 下的 open PRs。head_branch 非空则按 head 过滤。"""
+    qs = "state=open"
+    if head_branch:
+        qs += f"&head={owner}:{head_branch}"
+    status, body = _http("GET", f"{GH_API}/repos/{owner}/{name}/pulls?{qs}", token)
+    if status != 200 or not isinstance(body, list):
+        return []
+    return body
