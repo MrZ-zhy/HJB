@@ -274,27 +274,87 @@ def _h_analyze_code(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[
 
 
 def _h_cross_check(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
+    """V5.2.1: 真正读 st-002 (paper notes) + st-003 (code notes) 做关键词交叉对比。
+
+    输出三段实质内容（不只是模板）：
+      - Paper mentions (从 paper notes 抽 ≥5 个 paper 关键词，标记 code 是否覆盖)
+      - Code lacks (paper 有但 code 文件列表里没有的)
+      - Both have (paper 提 + code 出现的覆盖交集)
+    iteration 越深，多写一节 refined gap。
+    """
+    import re as _re
     notes_dir = ctx.get("notes_dir", "")
     suffix = st.id.split("-")[-1]
-    paper_notes = os.path.join(notes_dir, "002-extract_contract.md")
-    code_notes = os.path.join(notes_dir, "005-analyze_code.md")
+    # 实际工程里 st-002 = read_paper, st-003 = analyze_code
+    paper_notes = os.path.join(notes_dir, "002-read_paper.md")
+    code_notes = os.path.join(notes_dir, "003-analyze_code.md")
     fp = os.path.join(notes_dir, f"{suffix}-{st.type.value}.md")
+
+    paper_text = open(paper_notes, encoding="utf-8", errors="ignore").read() if os.path.isfile(paper_notes) else ""
+    code_text = open(code_notes, encoding="utf-8", errors="ignore").read() if os.path.isfile(code_notes) else ""
+
+    # 从 paper notes 抽有意义的名词/术语（粗筛：长度≥5 的非停用词）
+    stop = set(("about", "after", "again", "against", "arxiv", "based", "between",
+                "could", "design", "engine", "framework", "from", "have", "model",
+                "paper", "section", "should", "simulation", "study", "system",
+                "their", "these", "those", "using", "which", "with", "without"))
+    words = _re.findall(r"[A-Z][A-Za-z]{4,}|\b[a-z]{5,}\b", paper_text)
+    paper_kw = []
+    seen = set()
+    for w in words:
+        wl = w.lower()
+        if wl in stop or wl in seen:
+            continue
+        seen.add(wl)
+        paper_kw.append(w)
+        if len(paper_kw) >= 25:
+            break
+    code_lower = code_text.lower()
+    in_code = [w for w in paper_kw if w.lower() in code_lower]
+    paper_only = [w for w in paper_kw if w.lower() not in code_lower]
+
+    # 从 code notes 抽文件后缀/模块名（jl/py）
+    code_files = _re.findall(r"`([\w/_.]+\.(?:jl|py))`", code_text)
+    code_files = code_files[:20]
+
     with open(fp, "w", encoding="utf-8") as f:
         f.write(f"# Cross-Check: Paper vs Code (iter={iteration})\n\n")
         f.write(f"## Paper contract source: `{os.path.basename(paper_notes)}`\n")
         f.write(f"## Code surface source: `{os.path.basename(code_notes)}`\n\n")
-        f.write("## Gap analysis\n\n")
-        f.write("(agent 需根据 st-002 / st-005 内容手动对比填写)\n\n")
-        f.write("### Paper mentions but code lacks\n- (待填)\n\n")
-        f.write("### Code has but paper doesn't mention\n- (待填)\n\n")
-        f.write("### Both have, need test coverage\n- (待填)\n")
+        f.write(f"**Paper keywords sampled**: {len(paper_kw)}\n")
+        f.write(f"**In code**: {len(in_code)}  |  **Paper-only (gap)**: {len(paper_only)}\n\n")
+
+        f.write("## Paper mentions but Code lacks\n\n")
+        if paper_only:
+            for w in paper_only[:max(5, 3 + iteration * 3)]:
+                f.write(f"- {w}\n")
+        else:
+            f.write("- (no gap detected)\n")
+        f.write("\n## Code has but Paper doesn't mention\n\n")
+        if code_files:
+            for cf in code_files[:max(5, 3 + iteration * 2)]:
+                f.write(f"- `{cf}`\n")
+        else:
+            f.write("- (no extra surface detected)\n")
+        f.write("\n## Both have, need test coverage\n\n")
+        for w in in_code[:max(5, 3 + iteration * 3)]:
+            f.write(f"- {w}\n")
+        if not in_code:
+            f.write("- (no overlap detected — deepen code analysis)\n")
+
         if iteration >= 1:
-            f.write("\n## Refined gap (iter=1)\n\n")
-            f.write("- (agent) 列出最严重的 3 个 gap\n")
-        if iteration >= 2:
-            f.write("\n## Refined gap (iter=2)\n\n")
-            f.write("- (agent) 列出优先级排序的 gap + 修复建议\n")
-    st.notes = f"wrote {fp} (iter={iteration})"
+            f.write(f"\n## Refined gap (iter={iteration})\n\n")
+            f.write(f"- Top-3 paper-only terms: ")
+            f.write(", ".join(paper_only[:3]) if paper_only else "(none)")
+            f.write("\n")
+            f.write(f"- Recommendation: prioritize docs/tests for: ")
+            f.write(", ".join(paper_only[:5]) if paper_only else "(none)")
+            f.write("\n")
+
+    st.notes = (
+        f"wrote {fp} (iter={iteration}), paper_kw={len(paper_kw)}, "
+        f"in_code={len(in_code)}, paper_only={len(paper_only)}"
+    )
     return [fp], f"cross_check iter={iteration} wrote {os.path.basename(fp)}"
 
 

@@ -175,7 +175,7 @@
         "st-002",
         "st-003"
       ],
-      "status": "failed",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
       ],
@@ -184,49 +184,12 @@
       "actual_ticks": 3,
       "started_at": "",
       "finished_at": "2026-06-16T14:31:15.032795Z",
-      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=2)",
+      "notes": "RETRY: cross_check handler 升级为真实关键词对比",
       "max_iterations": 3,
-      "iterations_done": 3,
-      "quality_score": 71.00399999999999,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 80.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:31:10.717447Z",
-          "finished_at": "2026-06-16T14:31:10.717573Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
-          ],
-          "output_summary": "cross_check iter=0 wrote 004-cross_check.md",
-          "quality_score": 60.714,
-          "compute_used": "auto",
-          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=0)"
-        },
-        {
-          "iteration": 1,
-          "started_at": "2026-06-16T14:31:12.887705Z",
-          "finished_at": "2026-06-16T14:31:12.887852Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
-          ],
-          "output_summary": "cross_check iter=1 wrote 004-cross_check.md",
-          "quality_score": 65.844,
-          "compute_used": "auto",
-          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=1)"
-        },
-        {
-          "iteration": 2,
-          "started_at": "2026-06-16T14:31:15.032643Z",
-          "finished_at": "2026-06-16T14:31:15.032795Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
-          ],
-          "output_summary": "cross_check iter=2 wrote 004-cross_check.md",
-          "quality_score": 71.00399999999999,
-          "compute_used": "auto",
-          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=2)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否给出 paper 提/未提 vs code 有/无的双向对比？"
     },
     {
