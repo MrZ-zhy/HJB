@@ -19,3 +19,6 @@ __pycache__/
 .env.local
 *.token
 credentials.*
+核聚变开源贡献系统/项目/OpenReactor/
+核聚变开源贡献系统/项目/FUSE/
+核聚变开源贡献系统/项目/gym-torax/
