@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:37:20.123102Z",
+  "updated_at": "2026-06-16T14:37:22.347276Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -301,21 +301,34 @@
       "depends_on": [
         "st-006"
       ],
-      "status": "pending",
+      "status": "done",
       "output_files": [
-        "docs/src/pubs.md"
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
       ],
       "verification": "是否含 1+ 公式 + 1+ 论文引用？",
       "estimated_ticks": 1,
-      "actual_ticks": 0,
+      "actual_ticks": 1,
       "started_at": "",
-      "finished_at": "",
-      "notes": "",
+      "finished_at": "2026-06-16T14:37:22.347178Z",
+      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0)",
       "max_iterations": 2,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 75.414,
       "quality_threshold": 70.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:37:22.346984Z",
+          "finished_at": "2026-06-16T14:37:22.347178Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
+          ],
+          "output_summary": "write_docstring iter=0 plan for 1 files",
+          "quality_score": 75.414,
+          "compute_used": "auto",
+          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0)"
+        }
+      ],
       "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
     },
     {
@@ -454,7 +467,7 @@
     "paper_cited": true,
     "pr_body_complete": false,
     "human_approved": false,
-    "avg_subtask_quality": 78.58133333333333,
+    "avg_subtask_quality": 78.12885714285714,
     "min_subtask_quality": 75.33
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
