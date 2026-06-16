@@ -225,7 +225,7 @@
       "depends_on": [
         "st-004"
       ],
-      "status": "done",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
       ],
@@ -234,25 +234,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:37:11.605078Z",
-      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0)",
+      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
       "max_iterations": 2,
-      "iterations_done": 1,
-      "quality_score": 75.414,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 70.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:37:11.604940Z",
-          "finished_at": "2026-06-16T14:37:11.605078Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
-          ],
-          "output_summary": "write_docstring iter=0 plan for 1 files",
-          "quality_score": 75.414,
-          "compute_used": "auto",
-          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
     },
     {
@@ -263,7 +250,7 @@
       "depends_on": [
         "st-005"
       ],
-      "status": "done",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
       ],
@@ -272,25 +259,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:37:20.123030Z",
-      "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0)",
+      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
       "max_iterations": 1,
-      "iterations_done": 1,
-      "quality_score": 75.33,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 60.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:37:20.122896Z",
-          "finished_at": "2026-06-16T14:37:20.123030Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
-          ],
-          "output_summary": "write_citation iter=0",
-          "quality_score": 75.33,
-          "compute_used": "auto",
-          "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否含完整 bibtex？"
     },
     {
@@ -301,7 +275,7 @@
       "depends_on": [
         "st-006"
       ],
-      "status": "done",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
       ],
@@ -310,25 +284,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:37:22.347178Z",
-      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0)",
+      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
       "max_iterations": 2,
-      "iterations_done": 1,
-      "quality_score": 75.414,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 70.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:37:22.346984Z",
-          "finished_at": "2026-06-16T14:37:22.347178Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
-          ],
-          "output_summary": "write_docstring iter=0 plan for 1 files",
-          "quality_score": 75.414,
-          "compute_used": "auto",
-          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
     },
     {
@@ -416,7 +377,7 @@
         "st-008",
         "st-009"
       ],
-      "status": "done",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md"
       ],
@@ -425,25 +386,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:38:42.475877Z",
-      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md (iter=0)",
+      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
       "max_iterations": 3,
-      "iterations_done": 1,
-      "quality_score": 75.292,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 75.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:38:42.475736Z",
-          "finished_at": "2026-06-16T14:38:42.475877Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md"
-          ],
-          "output_summary": "self_critique iter=0",
-          "quality_score": 75.292,
-          "compute_used": "auto",
-          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md (iter=0)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否含 3 段（解决了什么/可能问题/改进建议）？"
     },
     {
@@ -454,7 +402,7 @@
       "depends_on": [
         "st-010"
       ],
-      "status": "done",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md"
       ],
@@ -463,25 +411,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:38:44.622382Z",
-      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md (iter=0)",
+      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
       "max_iterations": 3,
-      "iterations_done": 1,
-      "quality_score": 90.482,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 75.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:38:44.622219Z",
-          "finished_at": "2026-06-16T14:38:44.622382Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md"
-          ],
-          "output_summary": "write_pr_body iter=0",
-          "quality_score": 90.482,
-          "compute_used": "auto",
-          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md (iter=0)"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否含背景/动机/改动/验证四段？"
     },
     {

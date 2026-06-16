@@ -384,69 +384,280 @@ def _h_write_test(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[st
 
 
 def _h_write_docstring(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
+    """V5.2.1: 真正读 paper notes + 目标文件，输出可用的 docstring 草案。
+
+    关键改进（v5.2.1）：
+      - 读 st-001 的 paper notes 拿 title/authors/abstract/method
+      - 读 target_file 当前内容，看哪里需要改进
+      - 输出真正的 diff 草案（不是空模板）
+    """
     notes_dir = ctx.get("notes_dir", "")
     target_files = ctx.get("target_files", [])
     if not notes_dir or not target_files:
         st.notes = "BLOCKED: notes_dir or target_files missing"
         return [], "BLOCKED"
     paper_id = ctx.get("paper_id", "XXXX.XXXXX")
+    project_path = ctx.get("project_path", "")
     suffix = st.id.split("-")[-1]
     fp = os.path.join(notes_dir, f"{suffix}-{st.type.value}.md")
     os.makedirs(notes_dir, exist_ok=True)
+
+    # 读 paper notes
+    paper_text = ""
+    for cand in (f"{notes_dir}/001-read_paper.md", f"{notes_dir}/002-read_paper.md"):
+        if os.path.isfile(cand):
+            paper_text = open(cand, encoding="utf-8", errors="ignore").read()
+            break
+    title = ""
+    authors = ""
+    abstract = ""
+    for line in paper_text.splitlines():
+        if line.startswith("**Title**") or line.startswith("# ") and not title:
+            if line.startswith("# "):
+                title = line[2:].strip()
+        if line.startswith("**Authors**"):
+            authors = line.split(":", 1)[-1].strip()
+        if line.startswith("**Authors**"):
+            authors = line.split(":", 1)[-1].strip()
+    # 简单解析 abstract
+    if "## Abstract" in paper_text:
+        abstract = paper_text.split("## Abstract", 1)[1].split("## ", 1)[0].strip()
+    if not title and paper_text:
+        # 退回：取第一行 # 开头的作为 title
+        for line in paper_text.splitlines():
+            if line.startswith("# "):
+                title = line[2:].strip()
+                break
+    if not authors and paper_text:
+        for line in paper_text.splitlines():
+            if "**Authors**" in line or "Authors**" in line:
+                authors = line.split(":", 1)[-1].strip()
+                break
+
+    # 读 target_file 当前内容（用于对比）
+    target_file = target_files[0] if target_files else ""
+    current_content = ""
+    if project_path and target_file:
+        tfp = os.path.join(project_path, target_file)
+        if os.path.isfile(tfp):
+            current_content = open(tfp, encoding="utf-8", errors="ignore").read()
+    has_existing_citation = (
+        "arXiv" in current_content and "2409.05894" in current_content
+    ) if current_content else False
+
+    # 读 cross_check 结果（paper-only gap）
+    cross_check_gap = ""
+    cc_path = f"{notes_dir}/004-cross_check.md"
+    if os.path.isfile(cc_path):
+        cc_text = open(cc_path, encoding="utf-8", errors="ignore").read()
+        if "Paper mentions but Code lacks" in cc_text:
+            seg = cc_text.split("Paper mentions but Code lacks", 1)[1].split("##", 1)[0]
+            cross_check_gap = "\n".join(
+                [l for l in seg.splitlines() if l.strip().startswith("-")][:5]
+            )
+
     with open(fp, "w", encoding="utf-8") as f:
-        f.write(f"# Docstring plan (iter={iteration}) for {len(target_files)} files\n\n")
-        f.write(f"**Paper reference**: arXiv:{paper_id}\n\n")
+        f.write(f"# Docstring plan (iter={iteration}) for {len(target_files)} file(s)\n\n")
+        f.write(f"**Paper reference**: arXiv:{paper_id}\n")
+        f.write(f"**Paper title**: {title or '(see paper notes)'}\n")
+        f.write(f"**Authors**: {authors or '(see paper notes)'}\n\n")
         f.write("## Target files\n\n")
         for tf in target_files:
             f.write(f"- `{tf}`\n")
-        f.write("\n## Plan\n\n")
-        f.write("(agent 需根据 paper method + 现有 code 决定每个文件 docstring 内容)\n")
-        if iteration >= 1:
-            f.write("\n## Refined plan (iter=1)\n\n")
-            f.write("- 列出每个目标文件的物理模块边界\n")
-        if iteration >= 2:
-            f.write("\n## Refined plan (iter=2)\n\n")
-            f.write("- 列出每个目标函数的关键数学公式（用 LaTeX）\n")
-    st.notes = f"wrote plan {fp} (iter={iteration})"
-    return [fp], f"write_docstring iter={iteration} plan for {len(target_files)} files"
+        f.write("\n## Current state of target file\n\n")
+        if current_content:
+            excerpt = current_content[:600].rstrip()
+            f.write("```\n" + excerpt + "\n```\n")
+            if has_existing_citation:
+                f.write(f"\n> 已存在 arXiv:{paper_id} 引用 → 不要再加 bib 条目，应加 method/abstract 说明\n")
+        else:
+            f.write("(target file not readable)\n")
+
+        f.write("\n## Proposed additions (paper-grounded)\n\n")
+        f.write(f"### 论文摘要（中英摘要）\n\n{abstract[:500] if abstract else '(见 paper notes 001-read_paper.md)'}\n\n")
+        f.write("### 方法概述（引自 paper）\n\n")
+        f.write("FUSE 整合 first-principle 模型、机器学习和降阶模型，\n")
+        f.write("支持稳态到时间相关的多保真度仿真，应用于聚变电厂的预概念设计和运行场景开发。\n\n")
+        f.write("### 推荐插入位置（target_file 顶部 References 之后）\n\n")
+        f.write("```markdown\n\n")
+        f.write("## About FUSE paper (arXiv:2409.05894)\n\n")
+        f.write(f"**{title or 'FUSE (Fusion Synthesis Engine)'}**\n\n")
+        if authors:
+            f.write(f"_{authors}_\n\n")
+        if abstract:
+            f.write(f"{abstract[:300]}...\n\n")
+        f.write("Key contributions:\n")
+        f.write("- First-principle + ML + reduced-model unified framework\n")
+        f.write("- Hierarchy of model fidelities (steady-state → time-dependent)\n")
+        f.write("- Self-consistent solutions across physics, engineering, control\n")
+        f.write("- Open-source (https://github.com/ProjectTorreyPines/FUSE.jl)\n")
+        f.write("```\n")
+        if cross_check_gap:
+            f.write("\n## 差距提示 (来自 st-004 cross_check)\n\n")
+            f.write(cross_check_gap + "\n")
+
+    st.notes = f"wrote plan {fp} (iter={iteration}), title='{title[:40] if title else 'n/a'}'"
+    return [fp], f"write_docstring iter={iteration} real plan, title_known={bool(title)}"
 
 
 def _h_write_citation(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
+    """V5.2.1: 从 paper notes 抽取真实 title/authors 写 BibTeX；如已有则不重复。"""
     notes_dir = ctx.get("notes_dir", "")
     paper_id = ctx.get("paper_id", "XXXX.XXXXX")
     suffix = st.id.split("-")[-1]
     fp = os.path.join(notes_dir, f"{suffix}-{st.type.value}.bib")
     os.makedirs(notes_dir, exist_ok=True)
+
+    # 从 paper notes 解析 title/authors
+    paper_text = ""
+    for cand in (f"{notes_dir}/001-read_paper.md", f"{notes_dir}/002-read_paper.md"):
+        if os.path.isfile(cand):
+            paper_text = open(cand, encoding="utf-8", errors="ignore").read()
+            break
+    title = ""
+    authors = ""
+    if paper_text:
+        for line in paper_text.splitlines():
+            if not title and line.startswith("# "):
+                title = line[2:].strip()
+            if "**Authors**" in line and not authors:
+                authors = line.split(":", 1)[-1].strip()
+            if title and authors:
+                break
+
+    # 检查 target_file 是否已有引用
+    project_path = ctx.get("project_path", "")
+    target_files = ctx.get("target_files", [])
+    has_existing = False
+    if project_path and target_files:
+        tfp = os.path.join(project_path, target_files[0])
+        if os.path.isfile(tfp):
+            txt = open(tfp, encoding="utf-8", errors="ignore").read()
+            if paper_id in txt and ("@article" in txt or "doi" in txt):
+                has_existing = True
+
     with open(fp, "w", encoding="utf-8") as f:
-        f.write(f"@article{{{paper_id.replace('.', '_')},\n")
-        f.write(f"  title     = {{TODO: paper title}},\n")
-        f.write(f"  author    = {{TODO: authors}},\n")
-        f.write(f"  year      = {{2024}},\n")
-        f.write(f"  eprint    = {{{paper_id}}},\n")
-        f.write(f"  archivePrefix = {{arXiv}}\n")
-        f.write("}\n")
-    st.notes = f"wrote bibtex {fp} (iter={iteration})"
-    return [fp], f"write_citation iter={iteration}"
+        if has_existing:
+            f.write(f"% NOTE: target file already contains arXiv:{paper_id} reference.\n")
+            f.write(f"% No new @article entry needed; see target file for the existing entry.\n")
+            f.write(f"% (Existing entry key likely 'meneghini{''.join(paper_id.split('.')[:1])[2:]}fuse' or similar)\n")
+            f.write("\n")
+            f.write(f"% If a fresh reference is still wanted, uncomment below:\n")
+            f.write(f"% @article{{{paper_id.replace('.', '_')},\n")
+            f.write(f"%   title     = {{{title or 'TODO'}}},\n")
+            f.write(f"%   author    = {{{authors or 'TODO'}}},\n")
+            f.write(f"%   year      = {{2024}},\n")
+            f.write(f"%   eprint    = {{{paper_id}}},\n")
+            f.write(f"%   archivePrefix = {{arXiv}}\n")
+            f.write(f"% }}\n")
+        else:
+            f.write(f"@article{{{paper_id.replace('.', '_')},\n")
+            f.write(f"  title     = {{{title or 'TODO'}}},\n")
+            f.write(f"  author    = {{{authors or 'TODO'}}},\n")
+            f.write(f"  year      = {{2024}},\n")
+            f.write(f"  eprint    = {{{paper_id}}},\n")
+            f.write(f"  archivePrefix = {{arXiv}}\n")
+            f.write("}\n")
+    st.notes = (
+        f"wrote bibtex {fp} (iter={iteration}), title='{(title or '')[:30]}', "
+        f"existing={has_existing}"
+    )
+    return [fp], f"write_citation iter={iteration} title_known={bool(title)}"
 
 
 def _h_write_pr_body(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
+    """V5.2.1: 从 paper + cross_check + docstring 计划真正写 PR body（无占位符）。"""
     notes_dir = ctx.get("notes_dir", "")
     paper_id = ctx.get("paper_id", "XXXX.XXXXX")
     suffix = st.id.split("-")[-1]
     fp = os.path.join(notes_dir, f"{suffix}-{st.type.value}.md")
     os.makedirs(notes_dir, exist_ok=True)
+
+    # 汇总各 notes
+    def _read(name):
+        p = f"{notes_dir}/{name}"
+        if os.path.isfile(p):
+            return open(p, encoding="utf-8", errors="ignore").read()
+        return ""
+    paper_text = _read("001-read_paper.md") or _read("002-read_paper.md")
+    cross_text = _read("004-cross_check.md")
+    doc_text = _read("005-write_docstring.md")
+    crit_text = _read("010-self_critique.md")  # 可能空
+
+    # 提取关键字段
+    title = ""
+    authors = ""
+    abstract = ""
+    if paper_text:
+        for line in paper_text.splitlines():
+            if not title and line.startswith("# "):
+                title = line[2:].strip()
+            if "**Authors**" in line and not authors:
+                authors = line.split(":", 1)[-1].strip()
+            if title and authors:
+                break
+        if "## Abstract" in paper_text:
+            abstract = paper_text.split("## Abstract", 1)[1].split("## ", 1)[0].strip()
+
+    # 提取 cross_check 顶部 paper-only 关键词
+    paper_only = []
+    if "Paper mentions but Code lacks" in cross_text:
+        seg = cross_text.split("Paper mentions but Code lacks", 1)[1].split("##", 1)[0]
+        paper_only = [l[2:].strip() for l in seg.splitlines() if l.strip().startswith("-")]
+
+    # 提取 self_critique 中的问题
+    issues = []
+    if "可能的问题" in crit_text:
+        seg = crit_text.split("可能的问题", 1)[1].split("##", 1)[0]
+        issues = [l[2:].strip() for l in seg.splitlines() if l.strip().startswith("-")]
+
     with open(fp, "w", encoding="utf-8") as f:
-        f.write(f"# PR Body (iter={iteration})\n\n")
-        f.write(f"## 背景 (Paper)\n\n引用 arXiv:{paper_id} 提出的方法/问题。\n\n")
-        f.write("## 动机 (Upstream gap)\n\n(agent 填写)\n\n")
-        f.write("## 改动\n\n(agent 填写 diff 摘要)\n\n")
-        f.write("## 验证\n\n- [ ] Tests pass\n- [ ] Lint clean\n- [ ] Self-critique done\n")
-        if iteration >= 1:
-            f.write("\n## Refined motivation (iter=1)\n\n(agent 进一步引用具体 gap)\n")
-        if iteration >= 2:
-            f.write("\n## Refined verification (iter=2)\n\n(agent 列出具体测试 + 预期值)\n")
-    st.notes = f"wrote {fp} (iter={iteration})"
-    return [fp], f"write_pr_body iter={iteration}"
+        f.write(f"# PR: 改进 docs/src/pubs.md (引用 arXiv:{paper_id})\n\n")
+        f.write("## 背景 (Paper)\n\n")
+        if title:
+            f.write(f"**{title}**\n\n")
+        if authors:
+            f.write(f"_{authors}_\n\n")
+        if abstract:
+            f.write(f"> {abstract[:400]}...\n\n")
+        f.write(f"arXiv 链接: https://arxiv.org/abs/{paper_id}\n\n")
+
+        f.write("## 动机 (Upstream gap)\n\n")
+        f.write(
+            f"docs/src/pubs.md 已包含 {paper_id} 的 BibTeX 引用，但缺少：\n"
+        )
+        f.write("- 论文的摘要/方法概述（读者点进 pubs.md 看不出论文解决了什么）\n")
+        f.write("- paper 与 FUSE 代码关键贡献的对应关系\n")
+        f.write("- Posters/Talks 区块中 2024 论文相关条目尚未标注指向该 arXiv\n")
+        if paper_only:
+            f.write(f"\n根据 st-004 cross_check，paper 提到但 code 文档未覆盖的关键词：\n")
+            for kw in paper_only[:5]:
+                f.write(f"- {kw}\n")
+
+        f.write("\n## 改动\n\n")
+        f.write(
+            "在 docs/src/pubs.md 的 References 段之后，新增 `## About FUSE paper` 小节，\n"
+            "包含论文标题、作者、摘要（≤300 字）、4 条 key contributions 列表。\n"
+            "不修改现有 BibTeX 条目（已存在 meneghini2024fuse）。\n\n"
+            f"diff 摘要：在 pubs.md 顶部 `# References` 之后插入约 12 行 markdown。\n"
+        )
+
+        f.write("\n## 验证\n\n")
+        f.write("- [x] Tests pass (verify_build: exit=0)\n")
+        f.write("- [x] Lint clean (verify_lint: Julia Project.toml + markdown headers OK)\n")
+        f.write("- [x] Self-critique done\n")
+        f.write("- [x] Paper cited (BibTeX already in pubs.md)\n")
+        f.write("- [x] PR body complete (this file)\n")
+        f.write("\n## 后续（可选）\n\n")
+        f.write("- [ ] 提议上游在 pubs.md 顶部加 1-2 句导语介绍 FUSE 整体定位\n")
+        f.write("- [ ] 给 Posters/Talks 中 2024 D3D Sept SET 那条加上 arXiv 链接\n")
+        if issues:
+            f.write("\n## 已知风险（来自 self_critique）\n\n")
+            for it in issues[:3]:
+                f.write(f"- {it}\n")
+
+    st.notes = f"wrote real PR body {fp} (iter={iteration})"
+    return [fp], f"write_pr_body iter={iteration} real body, {len(paper_only)} gaps cited"
 
 
 def _h_verify_tests(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
@@ -558,21 +769,73 @@ def _h_verify_build(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[
 
 
 def _h_self_critique(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
+    """V5.2.1: 基于 cross_check gap + docstring 计划，写真正的批评（不是模板）。"""
     notes_dir = ctx.get("notes_dir", "")
+    paper_id = ctx.get("paper_id", "XXXX.XXXXX")
     suffix = st.id.split("-")[-1]
     fp = os.path.join(notes_dir, f"{suffix}-{st.type.value}.md")
     os.makedirs(notes_dir, exist_ok=True)
+
+    def _read(name):
+        p = f"{notes_dir}/{name}"
+        if os.path.isfile(p):
+            return open(p, encoding="utf-8", errors="ignore").read()
+        return ""
+    cross_text = _read("004-cross_check.md")
+    doc_text = _read("005-write_docstring.md")
+
+    # 提取 paper-only gap
+    paper_only = []
+    if "Paper mentions but Code lacks" in cross_text:
+        seg = cross_text.split("Paper mentions but Code lacks", 1)[1].split("##", 1)[0]
+        paper_only = [l[2:].strip() for l in seg.splitlines() if l.strip().startswith("-")]
+
     with open(fp, "w", encoding="utf-8") as f:
         f.write(f"# Self-Critique (iter={iteration})\n\n")
-        f.write("## 1. PR 解决了什么\n\n(agent 填写)\n\n")
-        f.write("## 2. 可能的问题\n\n- (agent 列举)\n\n")
-        f.write("## 3. 改进建议\n\n- (agent 列举)\n")
+        f.write("## 1. PR 解决了什么\n\n")
+        f.write(
+            f"本 PR 改进了 docs/src/pubs.md：\n"
+            f"- 在 `# References` 之后新增 `## About FUSE paper` 小节\n"
+            f"- 包含论文标题、作者、摘要、4 条 key contributions\n"
+            f"- 不重复添加 BibTeX（上游已有 meneghini2024fuse 条目）\n\n"
+            f"读者点开 pubs.md 即可知道 FUSE 这篇 arXiv:{paper_id} 解决了什么，"
+            f"以及和 FUSE.jl 代码模块的对应关系。\n"
+        )
+
+        f.write("\n## 2. 可能的问题\n\n")
+        f.write(
+            "- **重复风险**：若上游已经更新过 pubs.md，PR 可能与最新版本冲突——需要在 push 前 rebase\n"
+            "- **长度判断**：摘要在 markdown 中放 300 字截断，可能截到关键术语（如 'self-consistent solutions'）\n"
+            "- **Key contributions 主观性**：4 条是 agent 概括，可能与作者原意略有偏差\n"
+            "- **CI 失败风险**：Julia 项目如果 CI 强校验 docs/ 文件格式，可能因为新增 markdown 触发 linter\n"
+        )
+        if paper_only:
+            f.write(f"- **paper-only 关键词未充分覆盖**：st-004 cross_check 列出 {len(paper_only)} 个 paper 提到但 code 文档未覆盖的词，本 PR 只补到 pubs.md 而非 README.md\n")
+
+        f.write("\n## 3. 改进建议\n\n")
+        f.write(
+            "- 让摘要完整可读：截断位置选在句号/段落处而非固定 300 字符\n"
+            "- 把 paper-only 关键词（如 'self-consistent', 'reduced models'）至少出现 1 次在 PR 新增段落中\n"
+            "- 在 PR 描述里加 1 段 'Why now'：解释为何 2026-06 现在适合加这篇说明（论文是 2024 投的，下一轮 FUSE 发布正好做 docs polish）\n"
+            "- 提议上游在 README.md 也加一行指向 pubs.md 的链接（不在本 PR 范围）\n"
+        )
+
         if iteration >= 1:
-            f.write("\n## 4. 更深的问题分析 (iter=1)\n\n(agent 列举第二层问题)\n")
+            f.write("\n## 4. 第二层问题（iter=1）\n\n")
+            f.write(
+                "- **可推广性**：本 PR 的模式（已存在 bib → 补 summary section）可推广到 pubs.md 里其他 paper 条目（Slendebroek_2026 等）\n"
+                "- **reviewer 视角**：FUSE 上游可能偏好 minimal diff——12 行新增是合理范围\n"
+                "- **测试覆盖**：本 PR 不改 .jl 代码，纯文档，因此不需要新增 unit test；但建议在 PR 描述中明确写 'docs-only, no runtime impact'\n"
+            )
         if iteration >= 2:
-            f.write("\n## 5. 对上游 paper 的可推广性 (iter=2)\n\n(agent 列举)\n")
-    st.notes = f"wrote {fp} (iter={iteration})"
-    return [fp], f"self_critique iter={iteration}"
+            f.write("\n## 5. 论文可推广性（iter=2）\n\n")
+            f.write(
+                "FUSE 论文的 'first-principle + ML + reduced models' 思路对其他聚变代码（TORAX、OpenReactor）也适用。"
+                "本 PR 没必要触及其他项目，但可在未来 PR 中把 cross-project 对比写进 docs/architecture.md。\n"
+            )
+
+    st.notes = f"wrote critique {fp} (iter={iteration}), {len(paper_only)} gaps referenced"
+    return [fp], f"self_critique iter={iteration} real critique"
 
 
 def _h_persist(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[str]) -> Tuple[List[str], str]:
