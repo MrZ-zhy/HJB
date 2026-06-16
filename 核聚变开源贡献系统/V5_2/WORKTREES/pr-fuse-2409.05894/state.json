@@ -8,7 +8,7 @@
   "target_files": [
     "docs/src/pubs.md"
   ],
-  "state": "self_review",
+  "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
   "updated_at": "2026-06-16T14:38:54.234974Z",
   "subtasks": [
