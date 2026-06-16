@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:37:11.605146Z",
+  "updated_at": "2026-06-16T14:37:20.123102Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -263,22 +263,34 @@
       "depends_on": [
         "st-005"
       ],
-      "status": "pending",
+      "status": "done",
       "output_files": [
-        "README.md",
-        "docs/references.bib"
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
       ],
       "verification": "是否含完整 bibtex？",
       "estimated_ticks": 1,
-      "actual_ticks": 0,
+      "actual_ticks": 1,
       "started_at": "",
-      "finished_at": "",
-      "notes": "",
+      "finished_at": "2026-06-16T14:37:20.123030Z",
+      "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0)",
       "max_iterations": 1,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 75.33,
       "quality_threshold": 60.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:37:20.122896Z",
+          "finished_at": "2026-06-16T14:37:20.123030Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
+          ],
+          "output_summary": "write_citation iter=0",
+          "quality_score": 75.33,
+          "compute_used": "auto",
+          "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0)"
+        }
+      ],
       "verify_prompt": "是否含完整 bibtex？"
     },
     {
@@ -442,8 +454,8 @@
     "paper_cited": true,
     "pr_body_complete": false,
     "human_approved": false,
-    "avg_subtask_quality": 79.2316,
-    "min_subtask_quality": 75.414
+    "avg_subtask_quality": 78.58133333333333,
+    "min_subtask_quality": 75.33
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
   "pr_branch": "pr/FUSE/2409.05894",
