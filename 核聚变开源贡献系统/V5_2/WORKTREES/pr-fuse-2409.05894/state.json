@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:29:14.059867Z",
+  "updated_at": "2026-06-16T14:29:22.885227Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -82,13 +82,13 @@
       ],
       "verification": "是否覆盖 abstract + method + experimental 三节？",
       "estimated_ticks": 1,
-      "actual_ticks": 1,
+      "actual_ticks": 2,
       "started_at": "",
       "finished_at": "",
-      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=0)",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=1)",
       "max_iterations": 3,
-      "iterations_done": 1,
-      "quality_score": 43.794,
+      "iterations_done": 2,
+      "quality_score": 61.268,
       "quality_threshold": 70.0,
       "refinement_history": [
         {
@@ -102,6 +102,18 @@
           "quality_score": 43.794,
           "compute_used": "auto",
           "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=0)"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T14:29:22.359266Z",
+          "finished_at": "2026-06-16T14:29:22.885115Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=1 wrote 002-read_paper.md",
+          "quality_score": 61.268,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=1)"
         }
       ],
       "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
@@ -375,5 +387,5 @@
   "pr_number": null,
   "pr_url": "",
   "estimated_total_ticks": 13,
-  "compute_density": "default"
+  "compute_density": "deep"
 }
