@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:19:37.655772Z",
+  "updated_at": "2026-06-16T14:27:43.747544Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -18,19 +18,19 @@
       "type": "read_paper",
       "description": "读 arXiv:2409.05894 全文 + method 关键公式",
       "depends_on": [],
-      "status": "pending",
+      "status": "done",
       "output_files": [
-        "WORKTREES/pr-fuse-2409.05894/notes/01-iter0-paper-method.md"
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md"
       ],
       "verification": "是否覆盖 abstract + method + experimental 三节？",
       "estimated_ticks": 1,
-      "actual_ticks": 2,
+      "actual_ticks": 3,
       "started_at": "",
-      "finished_at": "",
-      "notes": "BLOCKED: arXiv:2409.05894 fetch failed",
+      "finished_at": "2026-06-16T14:27:43.747438Z",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md (iter=2)",
       "max_iterations": 3,
-      "iterations_done": 2,
-      "quality_score": 25.0,
+      "iterations_done": 3,
+      "quality_score": 78.526,
       "quality_threshold": 70.0,
       "refinement_history": [
         {
@@ -52,6 +52,18 @@
           "quality_score": 25.0,
           "compute_used": "auto",
           "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
+        },
+        {
+          "iteration": 2,
+          "started_at": "2026-06-16T14:27:43.087263Z",
+          "finished_at": "2026-06-16T14:27:43.747438Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=2 wrote 001-read_paper.md",
+          "quality_score": 78.526,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md (iter=2)"
         }
       ],
       "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
@@ -342,13 +354,13 @@
     "paper_cited": false,
     "pr_body_complete": false,
     "human_approved": false,
-    "avg_subtask_quality": 0.0,
-    "min_subtask_quality": 0.0
+    "avg_subtask_quality": 78.526,
+    "min_subtask_quality": 78.526
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
   "pr_branch": "pr/FUSE/2409.05894",
   "pr_number": null,
   "pr_url": "",
   "estimated_total_ticks": 13,
-  "compute_density": "default"
+  "compute_density": "deep"
 }
