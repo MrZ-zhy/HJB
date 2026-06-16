@@ -62,11 +62,20 @@ DEFAULT_PROJECTS_META = {
 
 
 def _git(*args: str) -> str:
+    """执行 git 命令；返回 stdout/stderr。
+
+    V5.2 first-principles 修复：原来 catch CalledProcessError 把失败返回成普通
+    字符串，导致 commit/push 失败时 step 仍标 ok=True，tick 报告误判为成功。
+    修法：commit 必须抛出来；其他只读命令（status/log/rev-parse）继续容错。
+    """
     try:
         return subprocess.check_output(
             ["git", *args], text=True, stderr=subprocess.STDOUT
         ).strip()
     except subprocess.CalledProcessError as e:
+        if args and args[0] in {"commit", "push", "merge", "revert"}:
+            # 写类命令必须失败可见
+            raise
         return e.output.strip()
 
 
@@ -125,6 +134,12 @@ class Orchestrator:
         t0 = time.time()
 
         # Step 1: env_prepare
+        # V5.2 first-principles 修复：兜底 git user.email/name 配置
+        # （之前 shell 脚本只在外部配，新 session 跑 tick 时 commit 会静默失败）
+        if not _git("config", "user.email"):
+            _git("config", "user.email", "engine@fusion-contrib.local")
+        if not _git("config", "user.name"):
+            _git("config", "user.name", "Fusion-Contrib Engine v5.2")
         head = _git("rev-parse", "--short", "HEAD")
         branch = _git("branch", "--show-current")
         dirty = bool(_git("status", "--porcelain"))
@@ -193,11 +208,23 @@ class Orchestrator:
         if selected_wt:
             self._update_quality_and_state(selected_wt)
         if not dry_run:
-            sha = self._persist_all()
+            try:
+                sha = self._persist_all()
+                self._record_step("persist", True, {"sha": sha},
+                                  elapsed_ms=int((time.time() - t5) * 1000))
+            except subprocess.CalledProcessError as e:
+                # V5.2 first-principles 修复：commit 失败必须把 step 标 ok=false，
+                # 不能让 tick 整体 overall_ok=true 但实际未落盘
+                err = (e.output or "").strip() if hasattr(e, "output") else str(e)
+                self._record_step("persist", False, {"attempted": True},
+                                  error=err[:500],
+                                  elapsed_ms=int((time.time() - t5) * 1000))
+                self._emit("persist_failed", error=err[:500])
+                sha = "(persist-failed)"
         else:
             sha = "(dry-run)"
-        self._record_step("persist", True, {"sha": sha},
-                          elapsed_ms=int((time.time() - t5) * 1000))
+            self._record_step("persist", True, {"sha": sha},
+                              elapsed_ms=int((time.time() - t5) * 1000))
 
         # Step 7: report
         self.result.next_action_hint = self._next_hint()
@@ -234,13 +261,26 @@ class Orchestrator:
                         f"SELF_REVIEW->READY_TO_SUBMIT: {w.pr_id} 质量全过"
                     )
                 else:
-                    self._emit("awaiting_human_approval", pr_id=w.pr_id,
-                               avg_quality=q.avg_subtask_quality,
-                               min_quality=q.min_subtask_quality,
-                               human_approved=q.human_approved)
-                    self.last_decide_rationale = (
-                        f"SELF_REVIEW: {w.pr_id} 质量全过但 human_approved={q.human_approved};需 promote"
-                    )
+                    # V5.2 修复：精确列出未过的门禁项，避免"质量全过但..."这种误导
+                    failed = [name for name, ok in q.checklist() if not ok]
+                    if "human_approved" in failed and len(failed) == 1:
+                        # 唯一卡点是 human gate
+                        self._emit("awaiting_human_approval", pr_id=w.pr_id,
+                                   avg_quality=q.avg_subtask_quality,
+                                   min_quality=q.min_subtask_quality,
+                                   human_approved=q.human_approved)
+                        self.last_decide_rationale = (
+                            f"SELF_REVIEW: {w.pr_id} 质量全过但 human_approved={q.human_approved};需 promote"
+                        )
+                    else:
+                        # 多个门禁没过：精确诊断
+                        self._emit("quality_gate_blocked", pr_id=w.pr_id,
+                                   failed_items=failed,
+                                   avg_quality=q.avg_subtask_quality,
+                                   min_quality=q.min_subtask_quality)
+                        self.last_decide_rationale = (
+                            f"SELF_REVIEW: {w.pr_id} 质量门禁未全过；未过项: {','.join(failed)}"
+                        )
                 return w, []  # 不调 sub-task，只评估/迁移
 
         # 2) active worktree
@@ -392,8 +432,16 @@ class Orchestrator:
                 q = w.quality
                 if q.human_approved:
                     return f"self_review_quality_check_passed:{w.pr_id}"
+                failed = [name for name, ok in q.checklist() if not ok]
+                if len(failed) == 1 and failed[0] == "human_approved":
+                    return (
+                        f"awaiting_human_approval:{w.pr_id} "
+                        f"(avg_q={q.avg_subtask_quality:.1f}, min_q={q.min_subtask_quality:.1f})"
+                    )
+                # 多个门禁没过：精确报告
                 return (
-                    f"awaiting_human_approval:{w.pr_id} "
+                    f"quality_gate_blocked:{w.pr_id} "
+                    f"failed=[{','.join(failed)}] "
                     f"(avg_q={q.avg_subtask_quality:.1f}, min_q={q.min_subtask_quality:.1f})"
                 )
         active = self.state.active_worktrees()

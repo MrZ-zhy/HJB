@@ -10,7 +10,7 @@
   ],
   "state": "self_review",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T15:08:07.813222Z",
+  "updated_at": "2026-06-16T16:05:51.204550Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -525,7 +525,7 @@
   ],
   "quality": {
     "all_subtasks_done": true,
-    "tests_pass": false,
+    "tests_pass": true,
     "lint_pass": true,
     "type_check_pass": true,
     "self_critique_pass": true,

@@ -17,7 +17,17 @@ from core.models import PRWorktree, QualityCriteria, SubTaskStatus
 
 
 def evaluate(wt: PRWorktree) -> QualityCriteria:
-    """从 PRWorktree 状态推断 QualityCriteria（V5.2：含质量分统计）。"""
+    """从 PRWorktree 状态推断 QualityCriteria（V5.2：含质量分统计）。
+
+    V5.2 修复（first-principles bug）：
+      原实现无脑要求所有 PR 都有 verify_tests 子任务。
+      但 T2(docstring-only)/T5(citation-only) 这两种 PR 类型根本没
+      设计 verify_tests 子任务（DAG 模板里就没这一项），导致
+      `tests_pass` 永远 = False，PR 永远卡在 self_review。
+      修法：按 pr_type 决定 `tests_pass` 语义：
+        - T1（代码 + 测试）：必须有 verify_tests 子任务且 exit=0
+        - T2（docstring）/T5（citation）：tests_pass 自动 True（设计上不要求）
+    """
     q = QualityCriteria()
 
     if wt.subtasks:
@@ -28,9 +38,14 @@ def evaluate(wt: PRWorktree) -> QualityCriteria:
         q.all_subtasks_done = False
 
     # verify 类
-    test_st = next((s for s in wt.subtasks
-                    if s.type.value == "verify_tests" and s.status == SubTaskStatus.DONE), None)
-    q.tests_pass = test_st is not None and "exit=0" in (test_st.notes or "")
+    pr_type = (wt.pr_type or "").upper()
+    if pr_type == "T1":
+        test_st = next((s for s in wt.subtasks
+                        if s.type.value == "verify_tests" and s.status == SubTaskStatus.DONE), None)
+        q.tests_pass = test_st is not None and "exit=0" in (test_st.notes or "")
+    else:
+        # T2 / T5：设计上不要求 verify_tests 子任务；tests_pass 自动 True
+        q.tests_pass = True
 
     lint_st = next((s for s in wt.subtasks
                     if s.type.value == "verify_lint" and s.status == SubTaskStatus.DONE), None)
