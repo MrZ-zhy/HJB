@@ -70,6 +70,20 @@ def _git(*args: str) -> str:
         return e.output.strip()
 
 
+def _git_checked(*args: str) -> Tuple[bool, str]:
+    """V5.2 新增：与 _git 类似，但显式返回 (ok, output)；ok=True 仅当 exit=0。
+
+    用于 push 这种「失败要可见但不抛异常」的命令。
+    """
+    try:
+        out = subprocess.check_output(
+            ["git", *args], text=True, stderr=subprocess.STDOUT
+        ).strip()
+        return True, out
+    except subprocess.CalledProcessError as e:
+        return False, (e.output or "").strip()
+
+
 class TickResult:
     def __init__(self) -> None:
         self.overall_ok: bool = True
@@ -296,7 +310,13 @@ class Orchestrator:
         wt.updated_at = datetime.utcnow().isoformat() + "Z"
 
     def _persist_all(self) -> str:
-        """写所有 worktree + main progress table + commit + push。"""
+        """写所有 worktree + main progress table + commit + push。
+
+        V5.2 变更：
+          - push 目标分支 = `HJB_BRANCH` 环境变量，默认使用当前 HEAD 分支（V5.1 遗留硬编码 trae 已废弃）
+          - push 失败时**不再静默**：orchestrator 收到 push 错误码会标记 step ok=false
+            并 emit 'push_failed' 事件；本地 commit 仍保留，不阻塞下次 tick
+        """
         for wt in self.state.worktrees:
             save_state(wt)
         # 写主表
@@ -323,7 +343,14 @@ class Orchestrator:
         _git("add", "-A")
         _git("commit", "-m", f"engine(v5.2): {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} tick")
         sha = _git("rev-parse", "--short", "HEAD")
-        _git("push", "origin", "trae/solo-agent-TbCBsF")
+        # V5.2 修复：push 目标 = HJB_BRANCH 环境变量 / 当前分支（不再是 trae/* 死分支）
+        target_branch = os.environ.get("HJB_BRANCH") or _git("branch", "--show-current") or "main"
+        push_ok, push_err = _git_checked("push", "origin", target_branch)
+        if not push_ok:
+            msg = f"push → origin/{target_branch} 失败: {push_err[:200]}; 本地 commit {sha} 已保留"
+            self._emit("push_failed", target=target_branch, sha=sha, error=push_err[:200])
+            # 不抛异常（V5.2 紧急降级原则：本地 commit 优先，push 失败不阻塞下次 tick）
+            print(f"[engine] WARN: {msg}")
         return sha
 
     def _global_progress(self) -> Tuple[int, int, float]:

@@ -1,0 +1,344 @@
+{
+  "pr_id": "pr-fuse-2409.05894",
+  "project": "FUSE",
+  "paper_arxiv_id": "2409.05894",
+  "paper_title": "FUSE Framework",
+  "pr_type": "T2",
+  "target_repo": "ProjectTorreyPines/FUSE.jl",
+  "target_files": [
+    "docs/src/pubs.md"
+  ],
+  "state": "accumulating",
+  "created_at": "2026-06-16T12:12:50.083644Z",
+  "updated_at": "2026-06-16T12:12:55.944145Z",
+  "subtasks": [
+    {
+      "id": "st-001",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "read_paper",
+      "description": "读 arXiv:2409.05894 全文 + method 关键公式",
+      "depends_on": [],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/01-iter0-paper-method.md"
+      ],
+      "verification": "是否覆盖 abstract + method + experimental 三节？",
+      "estimated_ticks": 1,
+      "actual_ticks": 1,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "BLOCKED: arXiv:2409.05894 fetch failed",
+      "max_iterations": 3,
+      "iterations_done": 1,
+      "quality_score": 20.0,
+      "quality_threshold": 70.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T12:12:55.944051Z",
+          "finished_at": "2026-06-16T12:12:55.944064Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED: fetch failed",
+          "quality_score": 20.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
+        }
+      ],
+      "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
+    },
+    {
+      "id": "st-002",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "read_paper",
+      "description": "提取 paper 中对该 method 在代码层 implementation 的描述",
+      "depends_on": [
+        "st-001"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/02-iter0-paper-impl.md"
+      ],
+      "verification": "是否覆盖 abstract + method + experimental 三节？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 3,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 70.0,
+      "refinement_history": [],
+      "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
+    },
+    {
+      "id": "st-003",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "analyze_code",
+      "description": "读 FUSE 目标文件 - `docs/src/pubs.md` 当前 docstring 状态",
+      "depends_on": [],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/03-iter0-code-docstring.md"
+      ],
+      "verification": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 4,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 75.0,
+      "refinement_history": [],
+      "verify_prompt": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？"
+    },
+    {
+      "id": "st-004",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "cross_check",
+      "description": "对比 paper method (st-001/002) vs code docstring (st-003)，找 gap",
+      "depends_on": [
+        "st-002",
+        "st-003"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/04-iter0-docstring-gap.md"
+      ],
+      "verification": "是否给出 paper 提/未提 vs code 有/无的双向对比？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 3,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 80.0,
+      "refinement_history": [],
+      "verify_prompt": "是否给出 paper 提/未提 vs code 有/无的双向对比？"
+    },
+    {
+      "id": "st-005",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_docstring",
+      "description": "为每个目标文件写增强 docstring（含推导 + 论文引用）",
+      "depends_on": [
+        "st-004"
+      ],
+      "status": "pending",
+      "output_files": [
+        "docs/src/pubs.md"
+      ],
+      "verification": "是否含 1+ 公式 + 1+ 论文引用？",
+      "estimated_ticks": 2,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 2,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 70.0,
+      "refinement_history": [],
+      "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
+    },
+    {
+      "id": "st-006",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_citation",
+      "description": "在 FUSE 的 docs/references.bib 或 README 添加论文 bibtex",
+      "depends_on": [
+        "st-005"
+      ],
+      "status": "pending",
+      "output_files": [
+        "README.md",
+        "docs/references.bib"
+      ],
+      "verification": "是否含完整 bibtex？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 1,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 60.0,
+      "refinement_history": [],
+      "verify_prompt": "是否含完整 bibtex？"
+    },
+    {
+      "id": "st-007",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_docstring",
+      "description": "在源文件 module-level docstring 引用 bibtex key",
+      "depends_on": [
+        "st-006"
+      ],
+      "status": "pending",
+      "output_files": [
+        "docs/src/pubs.md"
+      ],
+      "verification": "是否含 1+ 公式 + 1+ 论文引用？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 2,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 70.0,
+      "refinement_history": [],
+      "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
+    },
+    {
+      "id": "st-008",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "verify_lint",
+      "description": "跑 lint / markdownlint，0 error",
+      "depends_on": [
+        "st-007"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/08-iter0-lint.log"
+      ],
+      "verification": "lint 0 error？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 1,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 60.0,
+      "refinement_history": [],
+      "verify_prompt": "lint 0 error？"
+    },
+    {
+      "id": "st-009",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "verify_build",
+      "description": "确保 docs build 仍然通过",
+      "depends_on": [
+        "st-005"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/09-iter0-docs-build.log"
+      ],
+      "verification": "build exit 0？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 1,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 60.0,
+      "refinement_history": [],
+      "verify_prompt": "build exit 0？"
+    },
+    {
+      "id": "st-010",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "self_critique",
+      "description": "自我批评：docstring 推导是否清晰？论文引用是否准确？",
+      "depends_on": [
+        "st-008",
+        "st-009"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/10-iter0-self-critique.md"
+      ],
+      "verification": "是否含 3 段（解决了什么/可能问题/改进建议）？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 3,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 75.0,
+      "refinement_history": [],
+      "verify_prompt": "是否含 3 段（解决了什么/可能问题/改进建议）？"
+    },
+    {
+      "id": "st-011",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_pr_body",
+      "description": "写 PR description",
+      "depends_on": [
+        "st-010"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/notes/11-iter0-pr-body.md"
+      ],
+      "verification": "是否含背景/动机/改动/验证四段？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 3,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 75.0,
+      "refinement_history": [],
+      "verify_prompt": "是否含背景/动机/改动/验证四段？"
+    },
+    {
+      "id": "st-012",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "persist",
+      "description": "原子 commit + push（本地）",
+      "depends_on": [
+        "st-011"
+      ],
+      "status": "pending",
+      "output_files": [
+        "WORKTREES/pr-fuse-2409.05894/state.json"
+      ],
+      "verification": "state.json 已写 + git committed？",
+      "estimated_ticks": 1,
+      "actual_ticks": 0,
+      "started_at": "",
+      "finished_at": "",
+      "notes": "",
+      "max_iterations": 1,
+      "iterations_done": 0,
+      "quality_score": 0.0,
+      "quality_threshold": 50.0,
+      "refinement_history": [],
+      "verify_prompt": "state.json 已写 + git committed？"
+    }
+  ],
+  "quality": {
+    "all_subtasks_done": false,
+    "tests_pass": false,
+    "lint_pass": false,
+    "type_check_pass": false,
+    "self_critique_pass": false,
+    "paper_cited": false,
+    "pr_body_complete": false,
+    "human_approved": false,
+    "avg_subtask_quality": 0.0,
+    "min_subtask_quality": 0.0
+  },
+  "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
+  "pr_branch": "pr/FUSE/2409.05894",
+  "pr_number": null,
+  "pr_url": "",
+  "estimated_total_ticks": 13,
+  "compute_density": "default"
+}
