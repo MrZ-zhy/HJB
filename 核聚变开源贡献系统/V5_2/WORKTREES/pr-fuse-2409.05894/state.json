@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:44:17.519836Z",
+  "updated_at": "2026-06-16T14:44:19.628083Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -263,21 +263,34 @@
       "depends_on": [
         "st-005"
       ],
-      "status": "pending",
+      "status": "done",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
       ],
       "verification": "是否含完整 bibtex？",
       "estimated_ticks": 1,
-      "actual_ticks": 1,
+      "actual_ticks": 2,
       "started_at": "",
-      "finished_at": "2026-06-16T14:37:20.123030Z",
-      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
+      "finished_at": "2026-06-16T14:44:19.628014Z",
+      "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0), title='FUSE (Fusion Synthesis Engine)', existing=True",
       "max_iterations": 1,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 76.158,
       "quality_threshold": 60.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:19.627792Z",
+          "finished_at": "2026-06-16T14:44:19.628014Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
+          ],
+          "output_summary": "write_citation iter=0 title_known=True",
+          "quality_score": 76.158,
+          "compute_used": "auto",
+          "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0), title='FUSE (Fusion Synthesis Engine)', existing=True"
+        }
+      ],
       "verify_prompt": "是否含完整 bibtex？"
     },
     {
@@ -480,8 +493,8 @@
     "paper_cited": true,
     "pr_body_complete": false,
     "human_approved": false,
-    "avg_subtask_quality": 83.95275,
-    "min_subtask_quality": 78.526
+    "avg_subtask_quality": 83.08666666666666,
+    "min_subtask_quality": 76.158
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
   "pr_branch": "pr/FUSE/2409.05894",
