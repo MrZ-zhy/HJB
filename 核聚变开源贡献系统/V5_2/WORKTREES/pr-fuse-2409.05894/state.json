@@ -540,5 +540,5 @@
   "pr_number": null,
   "pr_url": "",
   "estimated_total_ticks": 13,
-  "compute_density": "deep"
+  "compute_density": "default"
 }
