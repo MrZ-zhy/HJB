@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T12:12:55.944145Z",
+  "updated_at": "2026-06-16T13:12:09.634169Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -24,13 +24,13 @@
       ],
       "verification": "是否覆盖 abstract + method + experimental 三节？",
       "estimated_ticks": 1,
-      "actual_ticks": 1,
+      "actual_ticks": 2,
       "started_at": "",
       "finished_at": "",
       "notes": "BLOCKED: arXiv:2409.05894 fetch failed",
       "max_iterations": 3,
-      "iterations_done": 1,
-      "quality_score": 20.0,
+      "iterations_done": 2,
+      "quality_score": 25.0,
       "quality_threshold": 70.0,
       "refinement_history": [
         {
@@ -40,6 +40,16 @@
           "output_files_written": [],
           "output_summary": "BLOCKED: fetch failed",
           "quality_score": 20.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T13:12:09.634091Z",
+          "finished_at": "2026-06-16T13:12:09.634103Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED: fetch failed",
+          "quality_score": 25.0,
           "compute_used": "auto",
           "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
         }
