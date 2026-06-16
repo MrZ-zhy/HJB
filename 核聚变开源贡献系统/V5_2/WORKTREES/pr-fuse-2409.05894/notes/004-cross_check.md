@@ -1,25 +1,27 @@
-# Cross-Check: Paper vs Code (iter=2)
+# Cross-Check: Paper vs Code (iter=0)
 
-## Paper contract source: `002-extract_contract.md`
-## Code surface source: `005-analyze_code.md`
+## Paper contract source: `002-read_paper.md`
+## Code surface source: `003-analyze_code.md`
 
-## Gap analysis
+**Paper keywords sampled**: 25
+**In code**: 1  |  **Paper-only (gap)**: 24
 
-(agent 需根据 st-002 / st-005 内容手动对比填写)
+## Paper mentions but Code lacks
 
-### Paper mentions but code lacks
-- (待填)
+- Fusion
+- Synthesis
+- Generation
+- Integrated
+- Pilot
 
-### Code has but paper doesn't mention
-- (待填)
+## Code has but Paper doesn't mention
 
-### Both have, need test coverage
-- (待填)
+- `test/runtests_study_database.jl`
+- `test/runtests_basics.jl`
+- `test/runtests_cases.jl`
+- `test/runtests_init_expressions.jl`
+- `test/test_zmq_actor.jl`
 
-## Refined gap (iter=1)
+## Both have, need test coverage
 
-- (agent) 列出最严重的 3 个 gap
-
-## Refined gap (iter=2)
-
-- (agent) 列出优先级排序的 gap + 修复建议
+- physics
