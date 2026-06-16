@@ -4,7 +4,7 @@
 **Year**: 2024
 **Authors**: O. Meneghini, T. Slendebroek, B. C. Lyons, K. McLaughlin, J. McClenaghan
 **Category**: physics.plasm-ph
-**Iteration**: 1
+**Iteration**: 2
 
 ## Abstract
 
@@ -13,3 +13,8 @@ The Fusion Synthesis Engine (FUSE) is a state-of-the-art software suite designed
 ## Method (extracted)
 
 - Key idea: The Fusion Synthesis Engine (FUSE) is a state-of-the-art software suite designed to revolutionize fusion power plant design. FUSE integrates first-principle models, machine learning, and reduced model
+
+## Experimental (extracted)
+
+- Reference values: see paper section 4
+- Validation approach: comparison with analytical solution
