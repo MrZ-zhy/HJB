@@ -1,0 +1,414 @@
+{
+  "OpenReactor": [
+    {
+      "id": "http://arxiv.org/abs/2603.04052v1",
+      "title": "First Experimental Characterization of Plasma Parameters and Carbon Decontamination Rates in a Microwave Resonator Used in Particle Accelerators",
+      "authors": [
+        "Camille Cheney",
+        "Gabriel Abi-abboud",
+        "Stéphane Béchu",
+        "Alexandre Bès",
+        "Laurent Bonny"
+      ],
+      "year": 2026,
+      "summary": "In-situ plasma processing of superconducting radio frequency (SRF) cavities is a performance recovery technique used to mitigate the field emission limiting phenomenon. It has been proved very effective at major particle accelerator facilities such as SNS, CEBAF, FRIB, FNAL and C-ADS. This technique is based on the ignition of a noble-gas/oxygen plasma inside the cavity over several hours to remove hydrocarbon-based contamination, responsible for the parasitic field emission degradation observed",
+      "primary_category": "physics.acc-ph",
+      "pdf_url": "https://arxiv.org/pdf/2603.04052v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2602.08743v1",
+      "title": "Preprint: Sheath thickness measurements with the biased plasma impedance probe, Agreement with Child Langmuir scaling",
+      "authors": [
+        "John Whitlock Brooks",
+        "Richeek Dutta"
+      ],
+      "year": 2026,
+      "summary": "Plasma sheaths play a central role in plasma-surface interactions, yet their thickness remains challenging to measure experimentally. Although classical analytical models such as the Child-Langmuir (CL) sheath model provide clear predictions for sheath thickness, experimental validation has been limited because most diagnostics either rely on indirect, multi-step inference (e.g., Langmuir probes) or require invasive and technically demanding techniques. In this work, we demonstrate that the plas",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2602.08743v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2601.08009v1",
+      "title": "Understanding microfabricated nanocalorimeter performance and responses to the energy fluxes from low-temperature plasma discharges",
+      "authors": [
+        "Carles Corbella",
+        "Feng Yi",
+        "Andrei Kolmakov"
+      ],
+      "year": 2026,
+      "summary": "Plasma diagnostics have a shortage of fast and sensitive calorimetric sensors that can track substrate temperature during plasma-assisted microfabrication. In this work, energy fluxes from argon and oxygen radiofrequency (RF) glow discharges have been probed using a novel nanocalorimeter sensor. The probe consists of an ultrathin SiNx membrane (100 nm) with a lithographically defined Pt micro-strip (100 nm) that serves as a calibrated resistance thermometer. The sensor temperature can increase f",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2601.08009v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2512.10259v1",
+      "title": "A DC discharge plasma experiment for undergraduate laboratories",
+      "authors": [
+        "You-Hsuan Chen",
+        "Ting-An Wang",
+        "Pisin Chen"
+      ],
+      "year": 2025,
+      "summary": "Plasma physics offers a wide range of fundamental phenomena, making it an excellent subject for undergraduate laboratory instruction. In this work, we present the design, construction, and characterization of a DC glow-discharge plasma chamber developed for the junior-level curriculum, a project carried out by two undergraduate students. The apparatus consists of a 1-meter-long quartz tube with a movable electrode, enabling systematic exploration of plasma behavior under varying pressure, voltag",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2512.10259v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2511.12322v1",
+      "title": "Non-perturbative 2D spatial measurements of electric fields within a plasma sheath",
+      "authors": [
+        "Mykhailo Vorobiov",
+        "Rob Behary",
+        "Will Torg",
+        "Nicolas DeStefano",
+        "Saskia Mordijck"
+      ],
+      "year": 2025,
+      "summary": "We introduce an all-optical quantum-enhanced diagnostic for electric fields in low-temperature plasmas. Trace amounts of rubidium vapor, added to argon plasma, allow us to produce spectrally narrow electric field-sensitive optical resonances via quantum optical effect of Rydberg electromagnetically induced transparency, and to non-invasively measure electric field in plasma with sensitivity exceeding 1 V/cm. By collecting fluorescence from the illuminated region of interest, we reconstruct a 2D ",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2511.12322v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2511.10956v1",
+      "title": "Studies of laser stimulated photodetachment from nanoparticles for particle charge measurements",
+      "authors": [
+        "Y. A. Ussenov",
+        "M. N. Shneider",
+        "S. Yatom",
+        "Y. Raitses"
+      ],
+      "year": 2025,
+      "summary": "Determining nanoparticle charge is more challenging than that for microparticles due to growth-induced size changes, substantial plasma property variations, and difficulties in visualizing individual particles, rendering conventional microparticle charge diagnostics ineffective in dusty plasma. In this work, we utilized laser-stimulated photodetachment (LSPD) to deduce the mean charge of nanoparticles. Nanoparticles were grown in an Ara and C2H2 mixture using a capacitively coupled RF discharge ",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2511.10956v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2604.09032v1",
+      "title": "A Fully Electromagnetic Hybrid PIC-Fluid Model for Predictive Fusion Neutron Yield in Dense Plasma Focus",
+      "authors": [
+        "Yinjian Zhao",
+        "Zhe Liu",
+        "Qiang Sun",
+        "Qianhong Zhou",
+        "Guangrui Sun"
+      ],
+      "year": 2026,
+      "summary": "While magnetic confinement fusion (MCF) and inertial confinement fusion (ICF) remain the primary routes toward controlled fusion, progress is still constrained by energy loss, plasma instabilities, and the cost and complexity of large-scale facilities. The Dense Plasma Focus (DPF) device presents a compact, pulsed-power-driven alternative for producing fusion-relevant conditions and neutron emissions. However, the quantitative prediction of neutron yield in DPF devices poses a significant numeri",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2604.09032v1"
+    }
+  ],
+  "PlasmaGym": [
+    {
+      "id": "http://arxiv.org/abs/2605.15935v1",
+      "title": "Dynamic Plasma Shape Control with Arbitrary Sensor Subsets",
+      "authors": [
+        "D. Sorokin",
+        "M. Stokolesov",
+        "A. Granovskiy",
+        "I. Prokofyev",
+        "E. Adishchev"
+      ],
+      "year": 2026,
+      "summary": "Plasma shape control in tokamaks requires a real-time controller that tracks dynamically changing shape targets while tolerating diagnostic failures. Classical approaches decompose the problem into equilibrium reconstruction followed by a linear controller, and assume a fixed, fully operational sensor set. We present a reinforcement learning agent that addresses both limitations simultaneously. The agent is trained in NSFsim, a high-fidelity tokamak simulator configured for DIII-D, on a curated ",
+      "primary_category": "cs.RO",
+      "pdf_url": "https://arxiv.org/pdf/2605.15935v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2511.08818v1",
+      "title": "Enabling Integrated AI Control on DIII-D: A Control System Design with State-of-the-art Experiments",
+      "authors": [
+        "Andrew Rothstein",
+        "Hiro Joseph Farre-Kaga",
+        "Jalal Butt",
+        "Ricardo Shousha",
+        "Keith Erickson"
+      ],
+      "year": 2025,
+      "summary": "We present the design and application of a general algorithm for Prediction And Control using MAchiNe learning (PACMAN) in DIII-D. Machine learing (ML)-based predictors and controllers have shown great promise in achieving regimes in which traditional controllers fail, such as tearing mode free scenarios, ELM-free scenarios and stable advanced tokamak conditions. The architecture presented here was deployed on DIII-D to facilitate the end-to-end implementation of advanced control experiments, fr",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2511.08818v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.17531v1",
+      "title": "Plasma Shape Control via Zero-shot Generative Reinforcement Learning",
+      "authors": [
+        "Niannian Wu",
+        "Rongpeng Li",
+        "Zongyu Yang",
+        "Yong Xiao",
+        "Ning Wei"
+      ],
+      "year": 2025,
+      "summary": "Traditional PID controllers have limited adaptability for plasma shape control, and task-specific reinforcement learning (RL) methods suffer from limited generalization and the need for repetitive retraining. To overcome these challenges, this paper proposes a novel framework for developing a versatile, zero-shot control policy from a large-scale offline dataset of historical PID-controlled discharges. Our approach synergistically combines Generative Adversarial Imitation Learning (GAIL) with Hi",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2510.17531v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2506.13267v1",
+      "title": "Reconstruction-free magnetic control of DIII-D plasma with deep reinforcement learning",
+      "authors": [
+        "G. F. Subbotin",
+        "D. I. Sorokin",
+        "M. R. Nurgaliev",
+        "A. A. Granovskiy",
+        "I. P. Kharitonov"
+      ],
+      "year": 2025,
+      "summary": "Precise control of plasma shape and position is essential for stable tokamak operation and achieving commercial fusion energy. Traditional control methods rely on equilibrium reconstruction and linearized models, limiting adaptability and real-time performance. Here,the first application of deep reinforcement learning (RL) for magnetic plasma control on the mid-size DIII-D tokamak is presented, demonstrating a nonlinear approach that improves robustness and flexibility across plasma scenarios. U",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2506.13267v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2502.12327v2",
+      "title": "Learning Plasma Dynamics and Robust Rampdown Trajectories with Predict-First Experiments at TCV",
+      "authors": [
+        "Allen M. Wang",
+        "Alessandro Pau",
+        "Cristina Rea",
+        "Oswin So",
+        "Charles Dawson"
+      ],
+      "year": 2025,
+      "summary": "The rampdown phase of a tokamak pulse is difficult to simulate and often exacerbates multiple plasma instabilities. To reduce the risk of disrupting operations, we leverage advances in Scientific Machine Learning (SciML) to combine physics with data-driven models, developing a neural state-space model (NSSM) that predicts plasma dynamics during Tokamak à Configuration Variable (TCV) rampdowns. The NSSM efficiently learns dynamics from a modest dataset of 311 pulses with only five pulses in a rea",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2502.12327v2"
+    },
+    {
+      "id": "http://arxiv.org/abs/2409.09238v2",
+      "title": "High-Fidelity Data-Driven Dynamics Model for Reinforcement Learning-based Control in HL-3 Tokamak",
+      "authors": [
+        "Niannian Wu",
+        "Zongyu Yang",
+        "Rongpeng Li",
+        "Ning Wei",
+        "Yihang Chen"
+      ],
+      "year": 2024,
+      "summary": "The success of reinforcement learning (RL)-based control in tokamaks, an emerging technique for controlled nuclear fusion with improved flexibility, typically requires substantial interaction with a simulator capable of accurately evolving the high-dimensional plasma state. Compared to first-principle-based simulators, whose intense computations lead to sluggish RL training, we devise an effective method to acquire a fully data-driven simulator, by mitigating the arising compounding error issue ",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2409.09238v2"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.07550v1",
+      "title": "Offline Reinforcement Learning for Plasma Control in Nuclear Fusion: Codebase and Benchmark",
+      "authors": [
+        "Yang Fu",
+        "Haomin Bao",
+        "Rohit Sonker",
+        "Xiaoyan Hu",
+        "Aravind Venugopal"
+      ],
+      "year": 2026,
+      "summary": "Offline reinforcement learning (RL) offers a promising route for developing plasma controllers from historical tokamak data, since online trial-and-error on real devices is costly and risky. However, progress in this direction remains difficult to measure due to the lack of a standardized offline RL benchmark for realistic multi-actuator, long-horizon plasma control problems in nuclear fusion. We introduce RL4F, an Offline Reinforcement Learning Benchmark for Plasma Control in Nuclear Fusion, pr",
+      "primary_category": "cs.LG",
+      "pdf_url": "https://arxiv.org/pdf/2606.07550v1"
+    }
+  ],
+  "FUSE": [
+    {
+      "id": "http://arxiv.org/abs/2606.10310v1",
+      "title": "DKEKAN: A single-parameterized KAN surrogate for Drift Kinetic Equation Toward Fast Neoclassical Toroidal Viscosity Torque Modeling in Tokamaks",
+      "authors": [
+        "Jinpeng Huang",
+        "Xingting Yan",
+        "Mingyu Zhang",
+        "Nana Bao",
+        "Zixuan Song"
+      ],
+      "year": 2026,
+      "summary": "The neoclassical toroidal viscosity (NTV) torque is a critical driver of toroidal rotation in tokamaks, profoundly influencing plasma stability and performance. Consequently, incorporating NTV effects is essential for modern integrated modeling frameworks that aim to self-consistently unify multiple physical processes. However, the high computational cost of NTV modeling precludes its self-consistent integration within such frameworks. This bottleneck arises because NTV calculation requires solv",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2606.10310v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.07201v1",
+      "title": "Impact of mechanical constraints on tokamak design and implications for high field power plants",
+      "authors": [
+        "Timothe Auclair",
+        "Baptiste Boudes",
+        "Jean-Luc Duchateau",
+        "Eric Nardon",
+        "Laura Pittaluga"
+      ],
+      "year": 2026,
+      "summary": "Two analytical models for sizing the toroidal field coils and central solenoid of a tokamak are developed within the D0FUS system code: a pedagogical thin-cylinder model and a refined thick-cylinder and winding packs model. The refined model shows good agreement with six reference machines and the MADE magnet design code. When the high-field design space is explored for DEMO-class power plants (2 GW of fusion power, Q = 40, tplateau = 2 h), pushing the peak field at the Toroidal Field (TF) coil ",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2606.07201v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2604.13447v1",
+      "title": "A Data-Free, Physics-Informed Surrogate Solver for Drift Kinetic Equation: Enabling Fast Neoclassical Toroidal Viscosity Torque Modeling in Tokamaks",
+      "authors": [
+        "Xingting Yan",
+        "Yuetao Meng",
+        "Nana Bao",
+        "Youwen Sun",
+        "Weiyong Zhou"
+      ],
+      "year": 2026,
+      "summary": "Toroidal rotation is crucial for maintaining stable and high performance plasmas in tokamak fusion reactors. Among its driving mechanisms, the neoclassical toroidal viscosity (NTV) torque--induced by three-dimensional magnetic perturbations--is particularly significant due to its strong impact and controllability, especially for reactor-scale devices like ITER where conventional momentum injection method becomes less effective. However, traditional first-principle NTV modeling is computationally",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2604.13447v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2603.12972v1",
+      "title": "On the timescales of controlled termination of tokamak plasmas",
+      "authors": [
+        "Simon Van Mulders",
+        "Olivier Sauter"
+      ],
+      "year": 2026,
+      "summary": "The RAPTOR code is used to model how the time required for controlled termination of Ohmic plasmas scales from present tokamaks like TCV and JET, to reactor-grade tokamaks like ITER and DEMO. We show that ramping the plasma current $I_p$ down to 20% of the flat-top value over a time $Δt_{ramp-down}=τ_{LR}=L_i/R$, with internal inductance $L_i$ and resistance $R$ evaluated at flat-top conditions, results in an approximately self-similar peaking of the current density for these four tokamaks, indi",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2603.12972v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2602.19110v1",
+      "title": "Machine learning prediction of plasma behavior from discharge configurations on WEST",
+      "authors": [
+        "Chenguang Wan",
+        "Feda Almuhisen",
+        "Philippe Moreau",
+        "Remy Nouailletas",
+        "Zhisong Qu"
+      ],
+      "year": 2026,
+      "summary": "Accurately predicting plasma behavior based on discharge configurations is essential for the safe and efficient operation of tokamak experiments. While physics-based integrated modeling codes provide valuable insights, their high computational cost limits their applicability for fast scenario design and control optimization. In this study, we propose a transformer-based machine learning model to predict key global plasma parameters on the WEST tokamak, including the normalized beta ($β_{n}$), to",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2602.19110v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2601.02942v1",
+      "title": "What Is the Minimum Number of Parameters Required to Represent Solutions of the Grad-Shafranov Equation?",
+      "authors": [
+        "Huasheng Xie",
+        "Yueyan Li"
+      ],
+      "year": 2026,
+      "summary": "Fast and accurate solutions of the Grad--Shafranov (GS) equation are essential for equilibrium analysis, integrated modeling, and surrogate model construction in magnetic confinement fusion. In this work, we address a fundamental question: what is the minimum number of free parameters required to accurately represent numerical solutions of the GS equation under fixed-boundary conditions? We demonstrate that, for most practical applications, GS equilibria can be represented using only 2--5 free p",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2601.02942v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.04298v2",
+      "title": "A Particle-in-Cell Simulation Framework for Thomson Scattering Analysis in Inertial Confinement Fusion",
+      "authors": [
+        "Ziang Zhu",
+        "Yifan Liu",
+        "Jun Li",
+        "Han Wen",
+        "Shihui Cao"
+      ],
+      "year": 2025,
+      "summary": "In inertial confinement fusion (ICF), Thomson scattering (TS) is a widely used diagnostic technique for probing plasma conditions. We present a first-principles numerical approach to obtaining scattered light signals of ion acoustic features with high resolution in angle and frequency space using particle-in-cell simulations under typical ICF conditions. Our method demonstrates good agreement with existing theories for thermal collective TS. In the super-thermal collective regime, the results al",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2510.04298v2"
+    }
+  ],
+  "gym-torax": [
+    {
+      "id": "http://arxiv.org/abs/2606.07550v1",
+      "title": "Offline Reinforcement Learning for Plasma Control in Nuclear Fusion: Codebase and Benchmark",
+      "authors": [
+        "Yang Fu",
+        "Haomin Bao",
+        "Rohit Sonker",
+        "Xiaoyan Hu",
+        "Aravind Venugopal"
+      ],
+      "year": 2026,
+      "summary": "Offline reinforcement learning (RL) offers a promising route for developing plasma controllers from historical tokamak data, since online trial-and-error on real devices is costly and risky. However, progress in this direction remains difficult to measure due to the lack of a standardized offline RL benchmark for realistic multi-actuator, long-horizon plasma control problems in nuclear fusion. We introduce RL4F, an Offline Reinforcement Learning Benchmark for Plasma Control in Nuclear Fusion, pr",
+      "primary_category": "cs.LG",
+      "pdf_url": "https://arxiv.org/pdf/2606.07550v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.05857v2",
+      "title": "Offline Reinforcement Learning for Rotation Profile Control in Tokamaks",
+      "authors": [
+        "Rohit Sonker",
+        "Hiro Josep Farre Kaga",
+        "Jiayu Chen",
+        "Andrew Rothstein",
+        "Ian Char"
+      ],
+      "year": 2026,
+      "summary": "Tokamaks remain leading candidates for achieving practical fusion energy, yet many important control problems inside these devices are still difficult or unsolved. One such challenge is controlling the plasma rotation profile, which strongly influences stability, confinement, and transport. While the average rotation can be controlled, controlling the full profile is challenging due to high dimensionality, response to multiple actuators and dependence on plasma condition. Learning-based control ",
+      "primary_category": "cs.LG",
+      "pdf_url": "https://arxiv.org/pdf/2605.05857v2"
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.17531v1",
+      "title": "Plasma Shape Control via Zero-shot Generative Reinforcement Learning",
+      "authors": [
+        "Niannian Wu",
+        "Rongpeng Li",
+        "Zongyu Yang",
+        "Yong Xiao",
+        "Ning Wei"
+      ],
+      "year": 2025,
+      "summary": "Traditional PID controllers have limited adaptability for plasma shape control, and task-specific reinforcement learning (RL) methods suffer from limited generalization and the need for repetitive retraining. To overcome these challenges, this paper proposes a novel framework for developing a versatile, zero-shot control policy from a large-scale offline dataset of historical PID-controlled discharges. Our approach synergistically combines Generative Adversarial Imitation Learning (GAIL) with Hi",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2510.17531v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.11283v2",
+      "title": "Gym-TORAX: Open-source software for integrating reinforcement learning with plasma control simulators in tokamak research",
+      "authors": [
+        "Antoine Mouchamps",
+        "Arthur Malherbe",
+        "Adrien Bolland",
+        "Damien Ernst"
+      ],
+      "year": 2025,
+      "summary": "This paper presents Gym-TORAX, a Python package enabling the implementation of Reinforcement Learning (RL) environments for simulating plasma dynamics and control in tokamaks. Users define succinctly a set of control actions and observations, and a control objective from which Gym-TORAX creates a Gymnasium environment that wraps TORAX for simulating the plasma dynamics. The objective is formulated through rewards depending on the simulated state of the plasma and control action to optimize speci",
+      "primary_category": "cs.LG",
+      "pdf_url": "https://arxiv.org/pdf/2510.11283v2"
+    },
+    {
+      "id": "http://arxiv.org/abs/2505.13709v3",
+      "title": "Policy-Driven World Model Adaptation for Robust Offline Model-based Reinforcement Learning",
+      "authors": [
+        "Jiayu Chen",
+        "Le Xu",
+        "Aravind Venugopal",
+        "Jeff Schneider"
+      ],
+      "year": 2025,
+      "summary": "Offline reinforcement learning (RL) offers a powerful paradigm for data-driven control. Compared to model-free approaches, offline model-based RL (MBRL) explicitly learns a world model from a static dataset and uses it as a surrogate simulator, improving data efficiency and enabling potential generalization beyond the dataset support. However, most existing offline MBRL methods follow a two-stage training procedure: first learning a world model by maximizing the likelihood of the observed transi",
+      "primary_category": "cs.LG",
+      "pdf_url": "https://arxiv.org/pdf/2505.13709v3"
+    },
+    {
+      "id": "http://arxiv.org/abs/2502.12327v2",
+      "title": "Learning Plasma Dynamics and Robust Rampdown Trajectories with Predict-First Experiments at TCV",
+      "authors": [
+        "Allen M. Wang",
+        "Alessandro Pau",
+        "Cristina Rea",
+        "Oswin So",
+        "Charles Dawson"
+      ],
+      "year": 2025,
+      "summary": "The rampdown phase of a tokamak pulse is difficult to simulate and often exacerbates multiple plasma instabilities. To reduce the risk of disrupting operations, we leverage advances in Scientific Machine Learning (SciML) to combine physics with data-driven models, developing a neural state-space model (NSSM) that predicts plasma dynamics during Tokamak à Configuration Variable (TCV) rampdowns. The NSSM efficiently learns dynamics from a modest dataset of 311 pulses with only five pulses in a rea",
+      "primary_category": "physics.plasm-ph",
+      "pdf_url": "https://arxiv.org/pdf/2502.12327v2"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.15935v1",
+      "title": "Dynamic Plasma Shape Control with Arbitrary Sensor Subsets",
+      "authors": [
+        "D. Sorokin",
+        "M. Stokolesov",
+        "A. Granovskiy",
+        "I. Prokofyev",
+        "E. Adishchev"
+      ],
+      "year": 2026,
+      "summary": "Plasma shape control in tokamaks requires a real-time controller that tracks dynamically changing shape targets while tolerating diagnostic failures. Classical approaches decompose the problem into equilibrium reconstruction followed by a linear controller, and assume a fixed, fully operational sensor set. We present a reinforcement learning agent that addresses both limitations simultaneously. The agent is trained in NSFsim, a high-fidelity tokamak simulator configured for DIII-D, on a curated ",
+      "primary_category": "cs.RO",
+      "pdf_url": "https://arxiv.org/pdf/2605.15935v1"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+
+# 上游项目源码（每个项目是独立 git repo，由本系统就地开发）
+# 用 / 前缀锁定 repo 根目录的 项目/ 才 ignore；rule #7 源码头
+/项目/
+
+# 但本系统的 per-project 子进度表（核聚变开源贡献系统/项目/<name>/进度表.md）
+# 是 git-tracked 的状态存档，rule #13 要求 100% 落 GitHub，必须进 git。
+# 显式反模式 allowlist 防止"项目"前缀误命中嵌套目录（即使上面已用 / 锁定）
+!核聚变开源贡献系统/项目/
+
+# Python 引擎工具运行产物（避免污染 git status）
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# 本地凭据（由执行引擎注入，绝不入库）
+.env
+.env.local
+*.token
+credentials.*
+核聚变开源贡献系统/项目/OpenReactor/
+核聚变开源贡献系统/项目/FUSE/
+核聚变开源贡献系统/项目/gym-torax/
