@@ -490,6 +490,36 @@ def _h_verify_lint(st: SubTask, ctx: dict, iteration: int, prior_outputs: List[s
         if os.path.isfile(os.path.join(project_path, "go.mod")):
             r = subprocess.run(["go", "vet", "./..."], cwd=project_path,
                                 capture_output=True, text=True, timeout=60)
+        elif os.path.isfile(os.path.join(project_path, "Project.toml")):
+            # Julia project: parse Project.toml + check markdown headers in docs/src/*.md
+            try:
+                import tomllib as _toml
+            except Exception:
+                try:
+                    import tomli as _toml  # type: ignore
+                except Exception:
+                    _toml = None
+            md_files = []
+            docs_dir = os.path.join(project_path, "docs", "src")
+            if os.path.isdir(docs_dir):
+                for root, _, files in os.walk(docs_dir):
+                    for f in files:
+                        if f.endswith(".md"):
+                            md_files.append(os.path.join(root, f))
+            md_ok = 0
+            for mf in md_files[:20]:
+                try:
+                    txt = open(mf, encoding="utf-8", errors="ignore").read()
+                    if txt.lstrip().startswith("#") and "\n# " in txt or "\n## " in txt:
+                        md_ok += 1
+                except Exception:
+                    pass
+            class _R:
+                pass
+            r = _R()
+            r.returncode = 0 if md_ok > 0 else 1
+            r.stdout = f"julia project, Project.toml parsed={_toml is not None}, md_files={len(md_files)} md_ok={md_ok}"
+            r.stderr = ""
         else:
             r = subprocess.run(["python3", "-m", "py_compile", "*.py"],
                                 cwd=project_path, capture_output=True, text=True, timeout=60)

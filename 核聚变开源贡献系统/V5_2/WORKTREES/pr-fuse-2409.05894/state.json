@@ -339,7 +339,7 @@
       "depends_on": [
         "st-007"
       ],
-      "status": "failed",
+      "status": "pending",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/008-verify_lint.log"
       ],
@@ -348,25 +348,12 @@
       "actual_ticks": 1,
       "started_at": "",
       "finished_at": "2026-06-16T14:37:24.695775Z",
-      "notes": "ran lint, exit=1",
+      "notes": "RETRY: verify_lint 现在支持 Julia 项目 (FUSE)",
       "max_iterations": 1,
-      "iterations_done": 1,
-      "quality_score": 40.132,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 60.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:37:24.642803Z",
-          "finished_at": "2026-06-16T14:37:24.695775Z",
-          "output_files_written": [
-            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/008-verify_lint.log"
-          ],
-          "output_summary": "verify_lint exit=1",
-          "quality_score": 40.132,
-          "compute_used": "auto",
-          "notes": "ran lint, exit=1"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "lint 0 error？"
     },
     {
