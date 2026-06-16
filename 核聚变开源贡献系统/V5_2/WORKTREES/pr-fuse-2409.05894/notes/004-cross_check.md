@@ -1,4 +1,4 @@
-# Cross-Check: Paper vs Code (iter=0)
+# Cross-Check: Paper vs Code (iter=1)
 
 ## Paper contract source: `002-extract_contract.md`
 ## Code surface source: `005-analyze_code.md`
@@ -15,3 +15,7 @@
 
 ### Both have, need test coverage
 - (待填)
+
+## Refined gap (iter=1)
+
+- (agent) 列出最严重的 3 个 gap
