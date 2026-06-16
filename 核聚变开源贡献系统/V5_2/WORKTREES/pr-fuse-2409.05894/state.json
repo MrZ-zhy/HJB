@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:38:54.234974Z",
+  "updated_at": "2026-06-16T14:44:17.519836Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -225,21 +225,34 @@
       "depends_on": [
         "st-004"
       ],
-      "status": "pending",
+      "status": "done",
       "output_files": [
         "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
       ],
       "verification": "是否含 1+ 公式 + 1+ 论文引用？",
       "estimated_ticks": 2,
-      "actual_ticks": 1,
+      "actual_ticks": 2,
       "started_at": "",
-      "finished_at": "2026-06-16T14:37:11.605078Z",
-      "notes": "RETRY: handler 升级 v5.2.1 (real content from paper notes)",
+      "finished_at": "2026-06-16T14:44:17.519765Z",
+      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'",
       "max_iterations": 2,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 80.69800000000001,
       "quality_threshold": 70.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:17.519476Z",
+          "finished_at": "2026-06-16T14:44:17.519765Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
+          ],
+          "output_summary": "write_docstring iter=0 real plan, title_known=True",
+          "quality_score": 80.69800000000001,
+          "compute_used": "auto",
+          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'"
+        }
+      ],
       "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
     },
     {
@@ -459,16 +472,16 @@
     }
   ],
   "quality": {
-    "all_subtasks_done": true,
+    "all_subtasks_done": false,
     "tests_pass": false,
     "lint_pass": true,
     "type_check_pass": true,
-    "self_critique_pass": true,
+    "self_critique_pass": false,
     "paper_cited": true,
-    "pr_body_complete": true,
+    "pr_body_complete": false,
     "human_approved": false,
-    "avg_subtask_quality": 81.90466666666667,
-    "min_subtask_quality": 75.292
+    "avg_subtask_quality": 83.95275,
+    "min_subtask_quality": 78.526
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
   "pr_branch": "pr/FUSE/2409.05894",
