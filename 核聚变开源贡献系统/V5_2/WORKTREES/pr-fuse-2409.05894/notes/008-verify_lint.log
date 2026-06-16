@@ -1,3 +1,3 @@
-exit=1
-stdout=
-stderr=[Errno 2] No such file or directory: '*.py'
+exit=0
+stdout=julia project, Project.toml parsed=True, md_files=12 md_ok=9
+stderr=
