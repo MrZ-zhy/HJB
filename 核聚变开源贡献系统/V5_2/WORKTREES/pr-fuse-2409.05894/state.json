@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:29:37.536880Z",
+  "updated_at": "2026-06-16T14:29:39.669431Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -142,13 +142,13 @@
       ],
       "verification": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？",
       "estimated_ticks": 1,
-      "actual_ticks": 1,
+      "actual_ticks": 2,
       "started_at": "",
       "finished_at": "",
       "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE",
       "max_iterations": 4,
-      "iterations_done": 1,
-      "quality_score": 20.0,
+      "iterations_done": 2,
+      "quality_score": 25.0,
       "quality_threshold": 75.0,
       "refinement_history": [
         {
@@ -158,6 +158,16 @@
           "output_files_written": [],
           "output_summary": "BLOCKED",
           "quality_score": 20.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T14:29:39.669305Z",
+          "finished_at": "2026-06-16T14:29:39.669353Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED",
+          "quality_score": 25.0,
           "compute_used": "auto",
           "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
         }
