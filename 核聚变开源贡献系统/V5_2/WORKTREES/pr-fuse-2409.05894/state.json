@@ -136,7 +136,7 @@
       "type": "analyze_code",
       "description": "读 FUSE 目标文件 - `docs/src/pubs.md` 当前 docstring 状态",
       "depends_on": [],
-      "status": "failed",
+      "status": "pending",
       "output_files": [
         "WORKTREES/pr-fuse-2409.05894/notes/03-iter0-code-docstring.md"
       ],
@@ -145,53 +145,12 @@
       "actual_ticks": 4,
       "started_at": "",
       "finished_at": "2026-06-16T14:29:44.027652Z",
-      "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE",
+      "notes": "RETRY: 项目/FUSE 目录已就绪（FUSE.jl cloned）",
       "max_iterations": 4,
-      "iterations_done": 4,
-      "quality_score": 35.0,
+      "iterations_done": 0,
+      "quality_score": 0.0,
       "quality_threshold": 75.0,
-      "refinement_history": [
-        {
-          "iteration": 0,
-          "started_at": "2026-06-16T14:29:37.536789Z",
-          "finished_at": "2026-06-16T14:29:37.536810Z",
-          "output_files_written": [],
-          "output_summary": "BLOCKED",
-          "quality_score": 20.0,
-          "compute_used": "auto",
-          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
-        },
-        {
-          "iteration": 1,
-          "started_at": "2026-06-16T14:29:39.669305Z",
-          "finished_at": "2026-06-16T14:29:39.669353Z",
-          "output_files_written": [],
-          "output_summary": "BLOCKED",
-          "quality_score": 25.0,
-          "compute_used": "auto",
-          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
-        },
-        {
-          "iteration": 2,
-          "started_at": "2026-06-16T14:29:41.802947Z",
-          "finished_at": "2026-06-16T14:29:41.802968Z",
-          "output_files_written": [],
-          "output_summary": "BLOCKED",
-          "quality_score": 30.0,
-          "compute_used": "auto",
-          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
-        },
-        {
-          "iteration": 3,
-          "started_at": "2026-06-16T14:29:44.027630Z",
-          "finished_at": "2026-06-16T14:29:44.027652Z",
-          "output_files_written": [],
-          "output_summary": "BLOCKED",
-          "quality_score": 35.0,
-          "compute_used": "auto",
-          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
-        }
-      ],
+      "refinement_history": [],
       "verify_prompt": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？"
     },
     {
