@@ -1,0 +1,40 @@
+{
+  "OpenReactor": {
+    "total_chars": 73417,
+    "keyword_hits": {
+      "fusor": 1,
+      "IEC": 2,
+      "Langmuir": 1,
+      "neutron": 20,
+      "high voltage": 11,
+      "vacuum": 98,
+      "mass flow": 9,
+      "gauges": 14
+    }
+  },
+  "FUSE": {
+    "total_chars": 1796185,
+    "keyword_hits": {
+      "FUSE": 1747,
+      "synthesis": 4,
+      "first principle": 0,
+      "integrated modeling": 0,
+      "tokamak": 84,
+      "pilot plant": 4,
+      "IMAS": 2242
+    }
+  },
+  "gym-torax": {
+    "total_chars": 238025,
+    "keyword_hits": {
+      "tokamak": 4,
+      "plasma": 75,
+      "control": 64,
+      "TORAX": 474,
+      "ITER": 81,
+      "ramp-up": 2,
+      "magnetic": 10,
+      "gym": 182
+    }
+  }
+}
