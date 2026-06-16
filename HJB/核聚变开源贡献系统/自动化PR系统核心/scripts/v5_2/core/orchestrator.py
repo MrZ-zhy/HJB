@@ -208,15 +208,11 @@ class Orchestrator:
 
         优先级：
           1) READY_TO_SUBMIT worktree → 不调 sub-task，只提示
-          2) SELF_REVIEW worktree → 跑一次 quality 评估，看是否能跳到 READY_TO_SUBMIT；
-             若不达标则保留 self_review 并把 next_action_hint 指向「等人类 gate」
-          3) ACCUMULATING worktree:
+          2) ACCUMULATING worktree:
              a) refinement_subtasks()（V5.2 核心：深化现有）
              b) pending_ready_subtasks()（首次启动 + 依赖就绪）
-          4) 没有 active worktree → 报错
+          3) 没有 active worktree → 报错
         """
-        print(f"[DEBUG-PROBE] _select_iteration start, density={self.density}")
-        print(f"[DEBUG-PROBE] worktrees in state: {[(w.pr_id, w.state) for w in self.state.worktrees]}")
         n_iters = sub_tasks_per_tick(self.density)
         # 1) 优先 ready worktree（人类 gate 提示）
         ready = self.state.ready_worktrees()
@@ -225,18 +221,17 @@ class Orchestrator:
             self.last_decide_rationale = "READY_TO_SUBMIT: 等待 human gate"
             return ready[0], []  # 不调 sub-task
 
-        # 2) SELF_REVIEW：自批评已完成，等质量门禁 / 人类 gate
-        print(f"[DEBUG] SELF_REVIEW scan, worktrees={[(w.pr_id, w.state) for w in self.state.worktrees]}")
+        # 1.5) V5.2 修复：SELF_REVIEW worktree 必须被处理，
+        #     否则永远卡在 self_review，不会跳到 ready_to_submit
         for w in self.state.worktrees:
             if w.state == PRState.SELF_REVIEW:
-                print(f"[DEBUG] hit SELF_REVIEW worktree: {w.pr_id}")
                 self._update_quality_and_state(w)
                 q = w.quality
                 if w.state == PRState.READY_TO_SUBMIT:
                     self._emit("auto_promoted_to_ready", pr_id=w.pr_id,
                                reason="is_ready_to_submit() == True")
                     self.last_decide_rationale = (
-                        f"SELF_REVIEW→READY_TO_SUBMIT: {w.pr_id} 质量全过"
+                        f"SELF_REVIEW->READY_TO_SUBMIT: {w.pr_id} 质量全过"
                     )
                 else:
                     self._emit("awaiting_human_approval", pr_id=w.pr_id,
@@ -244,11 +239,11 @@ class Orchestrator:
                                min_quality=q.min_subtask_quality,
                                human_approved=q.human_approved)
                     self.last_decide_rationale = (
-                        f"SELF_REVIEW: {w.pr_id} 质量全过但 human_approved={q.human_approved}；需 promote"
+                        f"SELF_REVIEW: {w.pr_id} 质量全过但 human_approved={q.human_approved};需 promote"
                     )
                 return w, []  # 不调 sub-task，只评估/迁移
 
-        # 3) active worktree
+        # 2) active worktree
         active = self.state.active_worktrees()
         if not active:
             self._emit("no_active_worktree", message="没有 ACCUMULATING 状态的 PRWorktree；需 init 新 worktree")
@@ -257,7 +252,7 @@ class Orchestrator:
 
         wt = active[0]
 
-        # 3a) 优先细化现有 sub-task（V5.2 核心）
+        # 2a) 优先细化现有 sub-task（V5.2 核心）
         refine_tasks = wt.refinement_subtasks()
         if refine_tasks:
             selected = refine_tasks[:n_iters]
@@ -269,7 +264,7 @@ class Orchestrator:
             )
             return wt, selected
 
-        # 3b) 没有需细化的 → 开新 sub-task
+        # 2b) 没有需细化的 → 开新 sub-task
         ready_tasks = wt.pending_ready_subtasks()
         if ready_tasks:
             selected = ready_tasks[:n_iters]
@@ -280,7 +275,7 @@ class Orchestrator:
             )
             return wt, selected
 
-        # 3c) 没有 ready 也没有 refining → 等待依赖
+        # 2c) 没有 ready 也没有 refining → 等待依赖
         self._emit("no_actionable_subtask", pr_id=wt.pr_id,
                    message="所有 sub-task 都在等待依赖；无需操作")
         self.last_decide_rationale = "WAITING_DEPS"
@@ -396,11 +391,10 @@ class Orchestrator:
             if w.state == PRState.SELF_REVIEW:
                 q = w.quality
                 if q.human_approved:
-                    return f"self_review_quality_check_passed:{w.pr_id} (等下次 tick 自动跳 READY_TO_SUBMIT)"
+                    return f"self_review_quality_check_passed:{w.pr_id}"
                 return (
                     f"awaiting_human_approval:{w.pr_id} "
-                    f"(avg_q={q.avg_subtask_quality:.1f}, min_q={q.min_subtask_quality:.1f}, "
-                    f"需运行 `promote {w.pr_id}`)"
+                    f"(avg_q={q.avg_subtask_quality:.1f}, min_q={q.min_subtask_quality:.1f})"
                 )
         active = self.state.active_worktrees()
         if active:
