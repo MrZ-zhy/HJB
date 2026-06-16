@@ -8,9 +8,9 @@
   "target_files": [
     "docs/src/pubs.md"
   ],
-  "state": "accumulating",
+  "state": "self_review",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:38:44.622453Z",
+  "updated_at": "2026-06-16T14:38:54.234974Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -492,26 +492,39 @@
       "depends_on": [
         "st-011"
       ],
-      "status": "pending",
+      "status": "done",
       "output_files": [
-        "WORKTREES/pr-fuse-2409.05894/state.json"
+        "./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json"
       ],
       "verification": "state.json 已写 + git committed？",
       "estimated_ticks": 1,
-      "actual_ticks": 0,
+      "actual_ticks": 1,
       "started_at": "",
-      "finished_at": "",
-      "notes": "",
+      "finished_at": "2026-06-16T14:38:54.234890Z",
+      "notes": "saved ./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json (iter=0)",
       "max_iterations": 1,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 100.0,
       "quality_threshold": 50.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:38:54.233753Z",
+          "finished_at": "2026-06-16T14:38:54.234890Z",
+          "output_files_written": [
+            "./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json"
+          ],
+          "output_summary": "persisted to state.json",
+          "quality_score": 100.0,
+          "compute_used": "auto",
+          "notes": "saved ./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json (iter=0)"
+        }
+      ],
       "verify_prompt": "state.json 已写 + git committed？"
     }
   ],
   "quality": {
-    "all_subtasks_done": false,
+    "all_subtasks_done": true,
     "tests_pass": false,
     "lint_pass": true,
     "type_check_pass": true,
@@ -519,7 +532,7 @@
     "paper_cited": true,
     "pr_body_complete": true,
     "human_approved": false,
-    "avg_subtask_quality": 80.25963636363636,
+    "avg_subtask_quality": 81.90466666666667,
     "min_subtask_quality": 75.292
   },
   "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
