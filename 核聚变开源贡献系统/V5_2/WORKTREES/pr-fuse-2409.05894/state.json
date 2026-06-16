@@ -10,7 +10,7 @@
   ],
   "state": "accumulating",
   "created_at": "2026-06-16T12:12:50.083644Z",
-  "updated_at": "2026-06-16T14:29:46.258565Z",
+  "updated_at": "2026-06-16T14:30:31.167266Z",
   "subtasks": [
     {
       "id": "st-001",
@@ -142,15 +142,26 @@
       ],
       "verification": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？",
       "estimated_ticks": 1,
-      "actual_ticks": 4,
+      "actual_ticks": 5,
       "started_at": "",
       "finished_at": "2026-06-16T14:29:44.027652Z",
-      "notes": "RETRY: 项目/FUSE 目录已就绪（FUSE.jl cloned）",
+      "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE",
       "max_iterations": 4,
-      "iterations_done": 0,
-      "quality_score": 0.0,
+      "iterations_done": 1,
+      "quality_score": 20.0,
       "quality_threshold": 75.0,
-      "refinement_history": [],
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:30:31.167168Z",
+          "finished_at": "2026-06-16T14:30:31.167193Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED",
+          "quality_score": 20.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: project_path missing or not dir: /workspace/HJB/项目/FUSE"
+        }
+      ],
       "verify_prompt": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？"
     },
     {
