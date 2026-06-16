@@ -221,6 +221,28 @@ class Orchestrator:
             self.last_decide_rationale = "READY_TO_SUBMIT: 等待 human gate"
             return ready[0], []  # 不调 sub-task
 
+        # 1.5) V5.2 修复：SELF_REVIEW worktree 必须被处理，
+        #     否则永远卡在 self_review，不会跳到 ready_to_submit
+        for w in self.state.worktrees:
+            if w.state == PRState.SELF_REVIEW:
+                self._update_quality_and_state(w)
+                q = w.quality
+                if w.state == PRState.READY_TO_SUBMIT:
+                    self._emit("auto_promoted_to_ready", pr_id=w.pr_id,
+                               reason="is_ready_to_submit() == True")
+                    self.last_decide_rationale = (
+                        f"SELF_REVIEW->READY_TO_SUBMIT: {w.pr_id} 质量全过"
+                    )
+                else:
+                    self._emit("awaiting_human_approval", pr_id=w.pr_id,
+                               avg_quality=q.avg_subtask_quality,
+                               min_quality=q.min_subtask_quality,
+                               human_approved=q.human_approved)
+                    self.last_decide_rationale = (
+                        f"SELF_REVIEW: {w.pr_id} 质量全过但 human_approved={q.human_approved};需 promote"
+                    )
+                return w, []  # 不调 sub-task，只评估/迁移
+
         # 2) active worktree
         active = self.state.active_worktrees()
         if not active:
@@ -361,10 +383,20 @@ class Orchestrator:
         return done, total, float(iters)
 
     def _next_hint(self) -> str:
-        active = self.state.active_worktrees()
         ready = self.state.ready_worktrees()
         if ready:
             return f"ready_for_human_gate:{ready[0].pr_id}"
+        # V5.2 新增：SELF_REVIEW worktree
+        for w in self.state.worktrees:
+            if w.state == PRState.SELF_REVIEW:
+                q = w.quality
+                if q.human_approved:
+                    return f"self_review_quality_check_passed:{w.pr_id}"
+                return (
+                    f"awaiting_human_approval:{w.pr_id} "
+                    f"(avg_q={q.avg_subtask_quality:.1f}, min_q={q.min_subtask_quality:.1f})"
+                )
+        active = self.state.active_worktrees()
         if active:
             wt = active[0]
             refine = wt.refinement_subtasks()
