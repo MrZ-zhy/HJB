@@ -1,4 +1,4 @@
-# Cross-Check: Paper vs Code (iter=0)
+# Cross-Check: Paper vs Code (iter=1)
 
 ## Paper contract source: `002-read_paper.md`
 ## Code surface source: `003-analyze_code.md`
@@ -13,6 +13,7 @@
 - Generation
 - Integrated
 - Pilot
+- Plants
 
 ## Code has but Paper doesn't mention
 
@@ -25,3 +26,8 @@
 ## Both have, need test coverage
 
 - physics
+
+## Refined gap (iter=1)
+
+- Top-3 paper-only terms: Fusion, Synthesis, Generation
+- Recommendation: prioritize docs/tests for: Fusion, Synthesis, Generation, Integrated, Pilot
