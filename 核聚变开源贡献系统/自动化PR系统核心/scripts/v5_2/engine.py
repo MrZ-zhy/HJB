@@ -23,7 +23,11 @@ from datetime import datetime
 from pathlib import Path
 
 # 让 `python3 v5_2/engine.py` 能 import 兄弟模块
-_PKG_PARENT = Path(__file__).resolve().parent.parent
+# V5.2 first-principles 修复：原本 _PKG_PARENT = .parent.parent 会指向
+# scripts/ 目录（错），但因为脚本目录 v5_2/ 自身在 sys.path 首位，
+# 实际 import 走的是 v5_2/，所以没崩。现改为显式 v5_2/ 目录，
+# 并把项目根 _REPO_ROOT 暴露给 v5_2 包内其他模块（持久化用）。
+_PKG_PARENT = Path(__file__).resolve().parent
 if str(_PKG_PARENT) not in sys.path:
     sys.path.insert(0, str(_PKG_PARENT))
 

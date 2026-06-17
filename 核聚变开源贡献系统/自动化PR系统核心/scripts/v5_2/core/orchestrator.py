@@ -28,6 +28,7 @@ import os
 import subprocess
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 from core.compute_budget import density_description, sub_tasks_per_tick
@@ -39,6 +40,21 @@ from core.quality_gate import evaluate as evaluate_quality
 from core.state_machine import assert_legal, self_check as sm_self_check
 from persistence.worktree_state import list_all_worktrees, save_state
 from pr_worktree.executor import execute_subtask_iteration
+
+
+# V5.2 first-principles 修复：基于 __file__ 定位 repo root
+# core/orchestrator.py 位于 .../scripts/v5_2/core/orchestrator.py
+# 上溯 6 层得到 /workspace/（包含 核聚变开源贡献系统/ 的目录）
+#   /workspace/核聚变开源贡献系统/自动化PR系统核心/scripts/v5_2/core/
+#   ↑0                                 ↑scripts      ↑v5_2
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
+# V5.2：进度表绝对路径（cwd 无关）
+MAIN_PROGRESS_TABLE = str(_REPO_ROOT / "核聚变开源贡献系统" / "进度表.md")
+# HJB git 仓库根：与 _REPO_ROOT 同级的 HJB 子目录（不是 _REPO_ROOT/HJB）
+# 之前错把 HJB 当成 _REPO_ROOT 子目录（"/workspace/核聚变开源贡献系统/HJB"），
+# 实际位置是 "/workspace/HJB"——HJB 仓库与 核聚变开源贡献系统/ 是同级兄弟。
+# 允许 HJB_REPO 环境变量覆盖（CI/容器里可能装到别处）。
+HJB_REPO_ROOT = os.environ.get("HJB_REPO_ROOT") or str(_REPO_ROOT / "HJB")
 
 
 # V5.2 项目元数据（沿用 V5.1）
@@ -67,10 +83,15 @@ def _git(*args: str) -> str:
     V5.2 first-principles 修复：原来 catch CalledProcessError 把失败返回成普通
     字符串，导致 commit/push 失败时 step 仍标 ok=True，tick 报告误判为成功。
     修法：commit 必须抛出来；其他只读命令（status/log/rev-parse）继续容错。
+
+    V5.2 second-principles 修复：默认 cwd = HJB_REPO_ROOT，让 git 操作 cwd 无关。
+    之前 _persist_all 假设 cwd 是 /workspace/HJB，但 engine 可能从 /workspace 跑
+    （v5.2 import 必须在 v5_2/ 目录下），commit/push 会找不到 repo 根。
     """
     try:
         return subprocess.check_output(
-            ["git", *args], text=True, stderr=subprocess.STDOUT
+            ["git", *args], text=True, stderr=subprocess.STDOUT,
+            cwd=HJB_REPO_ROOT,
         ).strip()
     except subprocess.CalledProcessError as e:
         if args and args[0] in {"commit", "push", "merge", "revert"}:
@@ -83,10 +104,12 @@ def _git_checked(*args: str) -> Tuple[bool, str]:
     """V5.2 新增：与 _git 类似，但显式返回 (ok, output)；ok=True 仅当 exit=0。
 
     用于 push 这种「失败要可见但不抛异常」的命令。
+    默认 cwd = HJB_REPO_ROOT（与 _git 对齐）。
     """
     try:
         out = subprocess.check_output(
-            ["git", *args], text=True, stderr=subprocess.STDOUT
+            ["git", *args], text=True, stderr=subprocess.STDOUT,
+            cwd=HJB_REPO_ROOT,
         ).strip()
         return True, out
     except subprocess.CalledProcessError as e:
@@ -324,12 +347,20 @@ class Orchestrator:
     def _execute_one_iteration(self, wt: PRWorktree, st: SubTask) -> None:
         """V5.2 核心：执行 1 次 sub-task iteration（深化或首次）。"""
         meta = DEFAULT_PROJECTS_META.get(wt.project, {})
+        # V5.2 first-principles 修复：notes_dir 强制转绝对路径，避免 executor 写到错位置
+        _nd = wt.notes_dir or ""
+        if _nd and not os.path.isabs(_nd):
+            _nd = str(_REPO_ROOT / _nd)
+        # project_path 同样兜底
+        _pp = meta.get("local", "")
+        if _pp and not os.path.isabs(_pp):
+            _pp = str(_REPO_ROOT / _pp)
         ctx = {
             "paper_id": wt.paper_arxiv_id,
             "project": wt.project,
-            "project_path": meta.get("local", ""),
+            "project_path": _pp,
             "target_files": wt.target_files,
-            "notes_dir": wt.notes_dir,
+            "notes_dir": _nd,
             "worktree": wt,
         }
         ok, quality, msg = execute_subtask_iteration(st, ctx)
@@ -388,7 +419,8 @@ class Orchestrator:
         # V5.2 second-principles 修复：用 sentinel "V52PENDINGCOMMIT" 替代双花括号占位符，
         # 避免 f-string 解析陷阱（`{{SHA}}` 写入是 `{SHA}`，但 `replace("{{SHA}}",...)` 是字面 `{{SHA}}`）。
         _SENTINEL = "V52PENDINGCOMMIT"
-        main_path = "核聚变开源贡献系统/进度表.md"
+        # V5.2 first-principles 修复：主进度表路径改为绝对路径，cwd 无关
+        main_path = MAIN_PROGRESS_TABLE
         if os.path.isfile(main_path):
             import re as _re
             with open(main_path, encoding="utf-8") as f:
@@ -412,6 +444,8 @@ class Orchestrator:
                          f"LAST_HEARTBEAT_NOTE: {note}", md)
             with open(main_path, "w", encoding="utf-8") as f:
                 f.write(md)
+        # V5.2 first-principles 修复：git 操作 cwd = HJB_REPO_ROOT（绝对路径），
+        # 不再依赖外部 cwd。_git/_git_checked 内部已统一。
         _git("add", "-A")
         _git("commit", "-m", f"engine(v5.2): {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} tick")
         sha = _git("rev-parse", "--short", "HEAD")

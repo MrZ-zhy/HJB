@@ -5,12 +5,18 @@ V5.2 升级（核心）：
   - 持久化 quality_score / iterations_done / max_iterations / quality_threshold / verify_prompt
   - 持久化 compute_density（PRWorktree 级别）
   - 恢复时全部读回，下次 tick 可继续深化（**中断恢复 V5.2 核心**）
+
+V5.2 first-principles 修复：WORKTREE_BASE 改为**绝对路径**（从 __file__ 计算），
+不再依赖 cwd。V5.1 之前用 cwd-relative 路径，导致 engine 在 `/workspace/` 跑
+能找到 worktree 但 import 失败；或在 `v5_2/` 跑能 import 但找不到 worktree。
+统一改成绝对路径后，cwd 不再是隐性依赖。
 """
 from __future__ import annotations
 
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 from typing import List, Optional
 
 from core.models import (
@@ -19,11 +25,18 @@ from core.models import (
 from pr_worktree.decomposer import decompose
 
 
-# V5.2：把 V5_1 目录改名为 V5_2
-WORKTREE_BASE = "核聚变开源贡献系统/V5_2/WORKTREES"
+# V5.2 first-principles 修复：基于 __file__ 定位 repo root
+# worktree_state.py 位于 .../scripts/v5_2/persistence/worktree_state.py
+# 上溯 6 层得到 /workspace/（包含 核聚变开源贡献系统/ 的目录）
+#   /workspace/核聚变开源贡献系统/自动化PR系统核心/scripts/v5_2/persistence/
+#   ↑0                                 ↑scripts      ↑v5_2    ↑parent
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
+# V5.2：把 V5_1 目录改名为 V5_2；WORKTREE_BASE 现为绝对路径，cwd 不再影响
+WORKTREE_BASE = str(_REPO_ROOT / "核聚变开源贡献系统" / "V5_2" / "WORKTREES")
 
 
 def worktree_dir(pr_id: str, root: str = ".") -> str:
+    # WORKTREE_BASE 已是绝对路径，os.path.join 在绝对路径前会丢弃 root
     return os.path.join(root, WORKTREE_BASE, pr_id)
 
 
@@ -48,6 +61,12 @@ def load_state(pr_id: str, root: str = ".") -> Optional[PRWorktree]:
     if not os.path.isfile(fp):
         return None
     raw = json.load(open(fp, encoding="utf-8"))
+    # V5.2 first-principles 修复：把旧版 relative notes_dir 升级为绝对路径
+    # （V5.1 之前写出的 notes_dir 形如 "核聚变开源贡献系统/V5_2/WORKTREES/..."，
+    #   在新 cwd 下会找不到；统一为绝对路径后，cwd 无关）
+    _notes_dir = raw.get("notes_dir", "")
+    if _notes_dir and not os.path.isabs(_notes_dir):
+        _notes_dir = str(_REPO_ROOT / _notes_dir)
     wt = PRWorktree(
         pr_id=raw["pr_id"],
         project=raw["project"],
@@ -59,7 +78,7 @@ def load_state(pr_id: str, root: str = ".") -> Optional[PRWorktree]:
         state=PRState(raw["state"]),
         created_at=raw["created_at"],
         updated_at=raw["updated_at"],
-        notes_dir=raw.get("notes_dir", ""),
+        notes_dir=_notes_dir,
         pr_branch=raw.get("pr_branch", ""),
         pr_number=raw.get("pr_number"),
         pr_url=raw.get("pr_url", ""),
@@ -134,7 +153,9 @@ def init_worktree(pr_id: str, project: str, paper_id: str, paper_title: str,
         state=PRState.DECOMPOSING,
         created_at=datetime.utcnow().isoformat() + "Z",
         updated_at=datetime.utcnow().isoformat() + "Z",
-        notes_dir=f"{WORKTREE_BASE}/{pr_id}/notes",
+        # V5.2 first-principles 修复：notes_dir 改为绝对路径（用 repo root 拼），
+        # 不再是 cwd-relative，否则 executor 在不同 cwd 下会写到错的位置
+        notes_dir=str(_REPO_ROOT / "核聚变开源贡献系统" / "V5_2" / "WORKTREES" / pr_id / "notes"),
         pr_branch=f"pr/{project}/{paper_id}",
         compute_density="default",
     )
