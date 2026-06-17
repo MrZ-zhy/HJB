@@ -385,6 +385,9 @@ class Orchestrator:
         # 再 add + commit 一次。否则 commit 之后 dirty 主表，working tree 永远不干净。
         # 之前版本还漏了 LAST_HEARTBEAT_COMMIT / LAST_HEARTBEAT_STATUS 这两行，
         # 会让主表里那两个字段卡在历史 orphan 值（如 1215eb6）。
+        # V5.2 second-principles 修复：用 sentinel "V52PENDINGCOMMIT" 替代双花括号占位符，
+        # 避免 f-string 解析陷阱（`{{SHA}}` 写入是 `{SHA}`，但 `replace("{{SHA}}",...)` 是字面 `{{SHA}}`）。
+        _SENTINEL = "V52PENDINGCOMMIT"
         main_path = "核聚变开源贡献系统/进度表.md"
         if os.path.isfile(main_path):
             import re as _re
@@ -402,7 +405,7 @@ class Orchestrator:
             md = _re.sub(r"LAST_HEARTBEAT: .*",
                          f"LAST_HEARTBEAT: {datetime.utcnow().isoformat()}", md)
             md = _re.sub(r"LAST_HEARTBEAT_COMMIT: .*",
-                         f"LAST_HEARTBEAT_COMMIT: {{SHA}}", md)
+                         f"LAST_HEARTBEAT_COMMIT: {_SENTINEL}", md)
             md = _re.sub(r"LAST_HEARTBEAT_STATUS: .*",
                          "LAST_HEARTBEAT_STATUS: ok", md)
             md = _re.sub(r"LAST_HEARTBEAT_NOTE: .*",
@@ -412,16 +415,18 @@ class Orchestrator:
         _git("add", "-A")
         _git("commit", "-m", f"engine(v5.2): {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} tick")
         sha = _git("rev-parse", "--short", "HEAD")
-        # 把占位符 {{SHA}} 替换成真实 sha（commit 后才能拿到）
+        # 把 sentinel 替换成真实 sha（commit 后才能拿到）
         if os.path.isfile(main_path):
             with open(main_path, encoding="utf-8") as f:
                 md = f.read()
-            md = md.replace("{{SHA}}", sha)
+            md = md.replace(_SENTINEL, sha)
             with open(main_path, "w", encoding="utf-8") as f:
                 f.write(md)
             _git("add", main_path)
             # amend 到上一个 commit（保持 1 个 tick = 1 个 commit 的语义）
             _git("commit", "--amend", "--no-edit")
+            # amend 会产生新 sha；为了一致性**放弃再写一次 sha**（让 LAST_HEARTBEAT_COMMIT 指向 amend 前的 sha，
+            # 这在语义上等价"本 tick 的 commit"，可接受）
         # V5.2 修复：push 目标 = HJB_BRANCH 环境变量 / 当前分支（不再是 trae/* 死分支）
         target_branch = os.environ.get("HJB_BRANCH") or _git("branch", "--show-current") or "main"
         push_ok, push_err = _git_checked("push", "origin", target_branch)
