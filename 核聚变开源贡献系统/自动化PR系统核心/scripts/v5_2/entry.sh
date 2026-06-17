@@ -61,12 +61,18 @@ if [ -z "$HJB_ROOT" ] || [ ! -d "$HJB_ROOT/.git" ]; then
 fi
 export HJB_ROOT
 cd "$HJB_ROOT" || { echo "[entry] FATAL: cd $HJB_ROOT failed"; exit 10; }
+# V5.2 first-principles 修复：git 同步输出（fetch/checkout/pull/reset）原本污染 stdout，
+# 导致下游 `python3 engine.py tick` 的 JSON TickReport 被这些 "Already on 'main'." / "From .../FETCH_HEAD"
+# 之类文字前缀污染无法直接被 json.load 解析。改为 >&2 把进度信息丢到 stderr，
+# stdout 干净保留给 engine.py 的 JSON 输出。
 git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/MrZ-zhy/HJB.git"
-git fetch origin
-git checkout main
-git pull --rebase origin main 2>&1 | tail -3 || {
-  echo "[entry] WARN: pull --rebase failed, reset --hard"
-  git reset --hard origin/main
+git fetch origin >&2
+git checkout main >&2
+# `2>&1 | tail -3 >&2`：把 pull 的 stderr 合并到 pipe，tail -3 的结果再重定向到 stderr，
+# 这样进度信息 ("Already up to date." 等) 全走 stderr，stdout 干净给 engine.py 输出 JSON。
+git pull --rebase origin main 2>&1 | tail -3 >&2 || {
+  echo "[entry] WARN: pull --rebase failed, reset --hard" >&2
+  git reset --hard origin/main >&2
 }
 
 # .env.local：fallback 兜底，.gitignore 屏蔽
