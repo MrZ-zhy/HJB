@@ -36,15 +36,31 @@ git config --global user.email "engine@fusion-contrib.local"
 git config --global user.name  "Fusion-Contrib Engine v5.2"
 git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 
-# ── Step 0c: HJB 仓库就位 ──
-export HJB_ROOT="${HJB_ROOT:-/workspace/HJB}"
-mkdir -p "$HJB_ROOT"
-cd "$HJB_ROOT" || { echo "[entry] FATAL: HJB_ROOT unavailable"; exit 10; }
-if [ ! -d "HJB/.git" ]; then
-  rm -rf HJB
-  git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/MrZ-zhy/HJB.git" HJB 2>&1 | tail -3
+# ── Step 0c: HJB 仓库就位（自动定位 git 仓库根，不再假设 HJB/HJB 套娃） ──
+# 第一性原理：HJB 仓库根 = 包含 .git/ 的目录。
+#   - 沙盒：/workspace/ 本身就是 HJB repo（.git 在 /workspace/.git）
+#   - 旧版假设：HJB_ROOT=/workspace/HJB，然后 cd HJB/HJB/…（错）
+# 修法：HJB_ROOT 默认起点 = /workspace 或 caller 传入的目录，
+#       上溯最多 10 层找 .git，找到即 cd 进去。
+_find_hjb_repo_root() {
+  local d="${1:-/workspace}"
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    if [ -d "$d/.git" ]; then echo "$d"; return 0; fi
+    local parent
+    parent="$(dirname "$d")"
+    if [ "$parent" = "$d" ]; then return 1; fi
+    d="$parent"
+  done
+  return 1
+}
+HJB_ROOT="$(_find_hjb_repo_root "${HJB_ROOT:-/workspace}" 2>/dev/null || true)"
+if [ -z "$HJB_ROOT" ] || [ ! -d "$HJB_ROOT/.git" ]; then
+  echo "[entry] FATAL: 在起点 ${HJB_ROOT:-/workspace} 上溯 10 层仍未找到 .git 目录"
+  echo "[entry]   请确认 HJB git 仓库是否已 clone，或显式 export HJB_ROOT=<repo 根>"
+  exit 10
 fi
-cd HJB
+export HJB_ROOT
+cd "$HJB_ROOT" || { echo "[entry] FATAL: cd $HJB_ROOT failed"; exit 10; }
 git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/MrZ-zhy/HJB.git"
 git fetch origin
 git checkout main
