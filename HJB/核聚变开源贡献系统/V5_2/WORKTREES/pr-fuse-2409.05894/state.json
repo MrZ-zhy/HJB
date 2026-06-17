@@ -1,0 +1,544 @@
+{
+  "pr_id": "pr-fuse-2409.05894",
+  "project": "FUSE",
+  "paper_arxiv_id": "2409.05894",
+  "paper_title": "FUSE Framework",
+  "pr_type": "T2",
+  "target_repo": "ProjectTorreyPines/FUSE.jl",
+  "target_files": [
+    "docs/src/pubs.md"
+  ],
+  "state": "self_review",
+  "created_at": "2026-06-16T12:12:50.083644Z",
+  "updated_at": "2026-06-17T03:02:33.684374Z",
+  "subtasks": [
+    {
+      "id": "st-001",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "read_paper",
+      "description": "读 arXiv:2409.05894 全文 + method 关键公式",
+      "depends_on": [],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md"
+      ],
+      "verification": "是否覆盖 abstract + method + experimental 三节？",
+      "estimated_ticks": 1,
+      "actual_ticks": 3,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:27:43.747438Z",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md (iter=2)",
+      "max_iterations": 3,
+      "iterations_done": 3,
+      "quality_score": 78.526,
+      "quality_threshold": 70.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T12:12:55.944051Z",
+          "finished_at": "2026-06-16T12:12:55.944064Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED: fetch failed",
+          "quality_score": 20.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T14:19:37.655695Z",
+          "finished_at": "2026-06-16T14:19:37.655707Z",
+          "output_files_written": [],
+          "output_summary": "BLOCKED: fetch failed",
+          "quality_score": 25.0,
+          "compute_used": "auto",
+          "notes": "BLOCKED: arXiv:2409.05894 fetch failed"
+        },
+        {
+          "iteration": 2,
+          "started_at": "2026-06-16T14:27:43.087263Z",
+          "finished_at": "2026-06-16T14:27:43.747438Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=2 wrote 001-read_paper.md",
+          "quality_score": 78.526,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/001-read_paper.md (iter=2)"
+        }
+      ],
+      "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
+    },
+    {
+      "id": "st-002",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "read_paper",
+      "description": "提取 paper 中对该 method 在代码层 implementation 的描述",
+      "depends_on": [
+        "st-001"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md"
+      ],
+      "verification": "是否覆盖 abstract + method + experimental 三节？",
+      "estimated_ticks": 1,
+      "actual_ticks": 3,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:29:29.872772Z",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=2)",
+      "max_iterations": 3,
+      "iterations_done": 3,
+      "quality_score": 78.526,
+      "quality_threshold": 70.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:29:13.548469Z",
+          "finished_at": "2026-06-16T14:29:14.059750Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=0 wrote 002-read_paper.md",
+          "quality_score": 43.794,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=0)"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T14:29:22.359266Z",
+          "finished_at": "2026-06-16T14:29:22.885115Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=1 wrote 002-read_paper.md",
+          "quality_score": 61.268,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=1)"
+        },
+        {
+          "iteration": 2,
+          "started_at": "2026-06-16T14:29:29.184024Z",
+          "finished_at": "2026-06-16T14:29:29.872772Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md"
+          ],
+          "output_summary": "read_paper iter=2 wrote 002-read_paper.md",
+          "quality_score": 78.526,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/002-read_paper.md (iter=2)"
+        }
+      ],
+      "verify_prompt": "是否覆盖 abstract + method + experimental 三节？"
+    },
+    {
+      "id": "st-003",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "analyze_code",
+      "description": "读 FUSE 目标文件 - `docs/src/pubs.md` 当前 docstring 状态",
+      "depends_on": [],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/003-analyze_code.md"
+      ],
+      "verification": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？",
+      "estimated_ticks": 1,
+      "actual_ticks": 7,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:31:08.620483Z",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/003-analyze_code.md, scanned 174 files, iter=0",
+      "max_iterations": 4,
+      "iterations_done": 1,
+      "quality_score": 82.246,
+      "quality_threshold": 75.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:31:08.618652Z",
+          "finished_at": "2026-06-16T14:31:08.620483Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/003-analyze_code.md"
+          ],
+          "output_summary": "analyze_code iter=0 scanned 30 files",
+          "quality_score": 82.246,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/003-analyze_code.md, scanned 174 files, iter=0"
+        }
+      ],
+      "verify_prompt": "是否列出 ≥ 5 个 function 签名 + 物理模块边界？"
+    },
+    {
+      "id": "st-004",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "cross_check",
+      "description": "对比 paper method (st-001/002) vs code docstring (st-003)，找 gap",
+      "depends_on": [
+        "st-002",
+        "st-003"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
+      ],
+      "verification": "是否给出 paper 提/未提 vs code 有/无的双向对比？",
+      "estimated_ticks": 1,
+      "actual_ticks": 5,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:37:09.356456Z",
+      "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=1), paper_kw=25, in_code=1, paper_only=24",
+      "max_iterations": 3,
+      "iterations_done": 2,
+      "quality_score": 81.446,
+      "quality_threshold": 80.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:37:07.182514Z",
+          "finished_at": "2026-06-16T14:37:07.183053Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
+          ],
+          "output_summary": "cross_check iter=0 wrote 004-cross_check.md",
+          "quality_score": 76.076,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=0), paper_kw=25, in_code=1, paper_only=24"
+        },
+        {
+          "iteration": 1,
+          "started_at": "2026-06-16T14:37:09.355862Z",
+          "finished_at": "2026-06-16T14:37:09.356456Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md"
+          ],
+          "output_summary": "cross_check iter=1 wrote 004-cross_check.md",
+          "quality_score": 81.446,
+          "compute_used": "auto",
+          "notes": "wrote 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/004-cross_check.md (iter=1), paper_kw=25, in_code=1, paper_only=24"
+        }
+      ],
+      "verify_prompt": "是否给出 paper 提/未提 vs code 有/无的双向对比？"
+    },
+    {
+      "id": "st-005",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_docstring",
+      "description": "为每个目标文件写增强 docstring（含推导 + 论文引用）",
+      "depends_on": [
+        "st-004"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
+      ],
+      "verification": "是否含 1+ 公式 + 1+ 论文引用？",
+      "estimated_ticks": 2,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:44:17.519765Z",
+      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'",
+      "max_iterations": 2,
+      "iterations_done": 1,
+      "quality_score": 80.69800000000001,
+      "quality_threshold": 70.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:17.519476Z",
+          "finished_at": "2026-06-16T14:44:17.519765Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md"
+          ],
+          "output_summary": "write_docstring iter=0 real plan, title_known=True",
+          "quality_score": 80.69800000000001,
+          "compute_used": "auto",
+          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/005-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'"
+        }
+      ],
+      "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
+    },
+    {
+      "id": "st-006",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_citation",
+      "description": "在 FUSE 的 docs/references.bib 或 README 添加论文 bibtex",
+      "depends_on": [
+        "st-005"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
+      ],
+      "verification": "是否含完整 bibtex？",
+      "estimated_ticks": 1,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:44:19.628014Z",
+      "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0), title='FUSE (Fusion Synthesis Engine)', existing=True",
+      "max_iterations": 1,
+      "iterations_done": 1,
+      "quality_score": 76.158,
+      "quality_threshold": 60.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:19.627792Z",
+          "finished_at": "2026-06-16T14:44:19.628014Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib"
+          ],
+          "output_summary": "write_citation iter=0 title_known=True",
+          "quality_score": 76.158,
+          "compute_used": "auto",
+          "notes": "wrote bibtex 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/006-write_citation.bib (iter=0), title='FUSE (Fusion Synthesis Engine)', existing=True"
+        }
+      ],
+      "verify_prompt": "是否含完整 bibtex？"
+    },
+    {
+      "id": "st-007",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_docstring",
+      "description": "在源文件 module-level docstring 引用 bibtex key",
+      "depends_on": [
+        "st-006"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
+      ],
+      "verification": "是否含 1+ 公式 + 1+ 论文引用？",
+      "estimated_ticks": 1,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:44:21.736207Z",
+      "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'",
+      "max_iterations": 2,
+      "iterations_done": 1,
+      "quality_score": 80.69800000000001,
+      "quality_threshold": 70.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:21.735936Z",
+          "finished_at": "2026-06-16T14:44:21.736207Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md"
+          ],
+          "output_summary": "write_docstring iter=0 real plan, title_known=True",
+          "quality_score": 80.69800000000001,
+          "compute_used": "auto",
+          "notes": "wrote plan 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/007-write_docstring.md (iter=0), title='FUSE (Fusion Synthesis Engine): A Next G'"
+        }
+      ],
+      "verify_prompt": "是否含 1+ 公式 + 1+ 论文引用？"
+    },
+    {
+      "id": "st-008",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "verify_lint",
+      "description": "跑 lint / markdownlint，0 error",
+      "depends_on": [
+        "st-007"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/008-verify_lint.log"
+      ],
+      "verification": "lint 0 error？",
+      "estimated_ticks": 1,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:38:40.378596Z",
+      "notes": "ran lint, exit=0",
+      "max_iterations": 1,
+      "iterations_done": 1,
+      "quality_score": 85.166,
+      "quality_threshold": 60.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:38:40.376417Z",
+          "finished_at": "2026-06-16T14:38:40.378596Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/008-verify_lint.log"
+          ],
+          "output_summary": "verify_lint exit=0",
+          "quality_score": 85.166,
+          "compute_used": "auto",
+          "notes": "ran lint, exit=0"
+        }
+      ],
+      "verify_prompt": "lint 0 error？"
+    },
+    {
+      "id": "st-009",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "verify_build",
+      "description": "确保 docs build 仍然通过",
+      "depends_on": [
+        "st-005"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/009-verify_build.log"
+      ],
+      "verification": "build exit 0？",
+      "estimated_ticks": 1,
+      "actual_ticks": 1,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:37:26.933608Z",
+      "notes": "ran build, exit=0",
+      "max_iterations": 1,
+      "iterations_done": 1,
+      "quality_score": 85.014,
+      "quality_threshold": 60.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:37:26.918645Z",
+          "finished_at": "2026-06-16T14:37:26.933608Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/009-verify_build.log"
+          ],
+          "output_summary": "verify_build exit=0",
+          "quality_score": 85.014,
+          "compute_used": "auto",
+          "notes": "ran build, exit=0"
+        }
+      ],
+      "verify_prompt": "build exit 0？"
+    },
+    {
+      "id": "st-010",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "self_critique",
+      "description": "自我批评：docstring 推导是否清晰？论文引用是否准确？",
+      "depends_on": [
+        "st-008",
+        "st-009"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md"
+      ],
+      "verification": "是否含 3 段（解决了什么/可能问题/改进建议）？",
+      "estimated_ticks": 1,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:44:23.902614Z",
+      "notes": "wrote critique 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md (iter=0), 6 gaps referenced",
+      "max_iterations": 3,
+      "iterations_done": 1,
+      "quality_score": 78.054,
+      "quality_threshold": 75.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:23.902361Z",
+          "finished_at": "2026-06-16T14:44:23.902614Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md"
+          ],
+          "output_summary": "self_critique iter=0 real critique",
+          "quality_score": 78.054,
+          "compute_used": "auto",
+          "notes": "wrote critique 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/010-self_critique.md (iter=0), 6 gaps referenced"
+        }
+      ],
+      "verify_prompt": "是否含 3 段（解决了什么/可能问题/改进建议）？"
+    },
+    {
+      "id": "st-011",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "write_pr_body",
+      "description": "写 PR description",
+      "depends_on": [
+        "st-010"
+      ],
+      "status": "done",
+      "output_files": [
+        "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md"
+      ],
+      "verification": "是否含背景/动机/改动/验证四段？",
+      "estimated_ticks": 1,
+      "actual_ticks": 2,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:44:25.922864Z",
+      "notes": "wrote real PR body 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md (iter=0)",
+      "max_iterations": 3,
+      "iterations_done": 1,
+      "quality_score": 94.58,
+      "quality_threshold": 75.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:44:25.922573Z",
+          "finished_at": "2026-06-16T14:44:25.922864Z",
+          "output_files_written": [
+            "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md"
+          ],
+          "output_summary": "write_pr_body iter=0 real body, 6 gaps cited",
+          "quality_score": 94.58,
+          "compute_used": "auto",
+          "notes": "wrote real PR body 核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes/011-write_pr_body.md (iter=0)"
+        }
+      ],
+      "verify_prompt": "是否含背景/动机/改动/验证四段？"
+    },
+    {
+      "id": "st-012",
+      "pr_id": "pr-fuse-2409.05894",
+      "type": "persist",
+      "description": "原子 commit + push（本地）",
+      "depends_on": [
+        "st-011"
+      ],
+      "status": "done",
+      "output_files": [
+        "./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json"
+      ],
+      "verification": "state.json 已写 + git committed？",
+      "estimated_ticks": 1,
+      "actual_ticks": 1,
+      "started_at": "",
+      "finished_at": "2026-06-16T14:38:54.234890Z",
+      "notes": "saved ./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json (iter=0)",
+      "max_iterations": 1,
+      "iterations_done": 1,
+      "quality_score": 100.0,
+      "quality_threshold": 50.0,
+      "refinement_history": [
+        {
+          "iteration": 0,
+          "started_at": "2026-06-16T14:38:54.233753Z",
+          "finished_at": "2026-06-16T14:38:54.234890Z",
+          "output_files_written": [
+            "./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json"
+          ],
+          "output_summary": "persisted to state.json",
+          "quality_score": 100.0,
+          "compute_used": "auto",
+          "notes": "saved ./核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/state.json (iter=0)"
+        }
+      ],
+      "verify_prompt": "state.json 已写 + git committed？"
+    }
+  ],
+  "quality": {
+    "all_subtasks_done": true,
+    "tests_pass": true,
+    "lint_pass": true,
+    "type_check_pass": true,
+    "self_critique_pass": true,
+    "paper_cited": true,
+    "pr_body_complete": true,
+    "human_approved": false,
+    "avg_subtask_quality": 83.426,
+    "min_subtask_quality": 76.158
+  },
+  "notes_dir": "核聚变开源贡献系统/V5_2/WORKTREES/pr-fuse-2409.05894/notes",
+  "pr_branch": "pr/FUSE/2409.05894",
+  "pr_number": null,
+  "pr_url": "",
+  "estimated_total_ticks": 13,
+  "compute_density": "default"
+}
