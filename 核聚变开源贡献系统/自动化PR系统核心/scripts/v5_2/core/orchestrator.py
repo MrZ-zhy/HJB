@@ -381,7 +381,10 @@ class Orchestrator:
         """
         for wt in self.state.worktrees:
             save_state(wt)
-        # 写主表
+        # V5.2 first-principles 修复：先**读主表 + 替换 4 行 + 写回**，
+        # 再 add + commit 一次。否则 commit 之后 dirty 主表，working tree 永远不干净。
+        # 之前版本还漏了 LAST_HEARTBEAT_COMMIT / LAST_HEARTBEAT_STATUS 这两行，
+        # 会让主表里那两个字段卡在历史 orphan 值（如 1215eb6）。
         main_path = "核聚变开源贡献系统/进度表.md"
         if os.path.isfile(main_path):
             import re as _re
@@ -398,6 +401,10 @@ class Orchestrator:
             )
             md = _re.sub(r"LAST_HEARTBEAT: .*",
                          f"LAST_HEARTBEAT: {datetime.utcnow().isoformat()}", md)
+            md = _re.sub(r"LAST_HEARTBEAT_COMMIT: .*",
+                         f"LAST_HEARTBEAT_COMMIT: {{SHA}}", md)
+            md = _re.sub(r"LAST_HEARTBEAT_STATUS: .*",
+                         "LAST_HEARTBEAT_STATUS: ok", md)
             md = _re.sub(r"LAST_HEARTBEAT_NOTE: .*",
                          f"LAST_HEARTBEAT_NOTE: {note}", md)
             with open(main_path, "w", encoding="utf-8") as f:
@@ -405,6 +412,16 @@ class Orchestrator:
         _git("add", "-A")
         _git("commit", "-m", f"engine(v5.2): {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} tick")
         sha = _git("rev-parse", "--short", "HEAD")
+        # 把占位符 {{SHA}} 替换成真实 sha（commit 后才能拿到）
+        if os.path.isfile(main_path):
+            with open(main_path, encoding="utf-8") as f:
+                md = f.read()
+            md = md.replace("{{SHA}}", sha)
+            with open(main_path, "w", encoding="utf-8") as f:
+                f.write(md)
+            _git("add", main_path)
+            # amend 到上一个 commit（保持 1 个 tick = 1 个 commit 的语义）
+            _git("commit", "--amend", "--no-edit")
         # V5.2 修复：push 目标 = HJB_BRANCH 环境变量 / 当前分支（不再是 trae/* 死分支）
         target_branch = os.environ.get("HJB_BRANCH") or _git("branch", "--show-current") or "main"
         push_ok, push_err = _git_checked("push", "origin", target_branch)
