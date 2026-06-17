@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -26,6 +27,37 @@ from pathlib import Path
 _PKG_PARENT = Path(__file__).resolve().parent.parent
 if str(_PKG_PARENT) not in sys.path:
     sys.path.insert(0, str(_PKG_PARENT))
+
+
+# ──────────────────────────────────────────────────────────────
+# V5.2 first-principles 修复：自动 chdir 到 git 根
+#
+# 背景：所有 V5.2 持久化路径（WORKTREE_BASE / 进度表.md / project_path）
+# 都是相对路径，并基于"cwd 是 git 根（HJB 仓库根）"这一假设。
+# 旧 prompt 期望 `cd /workspace/HJB/HJB/` 后再跑，但实际沙盒启动后
+# cwd 经常是 `/workspace`（git 根）或任意子目录；只要 cwd 不是 git 根，
+# list_all_worktrees / save_state / commit & push 全部走错路径，
+# 导致"找不到 worktree / worktree 0 / persist 失败"等隐 bug。
+#
+# 修法：启动时调 `git rev-parse --show-toplevel` 拿 git 根，并 os.chdir 过去。
+# 这样无论外部触发器把 cwd 放在哪，相对路径都从 git 根解析，与 prompt 描述一致。
+# 若不在 git 仓库内（开发调试场景），保留原 cwd 不变。
+# ──────────────────────────────────────────────────────────────
+def _chdir_to_git_root() -> str:
+    try:
+        out = subprocess.check_output(
+            ["git", "rev-parse", "--show-toplevel"],
+            stderr=subprocess.STDOUT, text=True,
+        ).strip()
+        if out and os.path.isdir(out):
+            os.chdir(out)
+            return out
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass
+    return os.getcwd()
+
+
+_GIT_ROOT = _chdir_to_git_root()
 
 
 # V5.2 持久化：当前 density 写到一个本地文件
