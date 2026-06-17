@@ -25,14 +25,31 @@ from core.models import (
 from pr_worktree.decomposer import decompose
 
 
-# V5.2 first-principles 修复：基于 __file__ 定位 repo root
-# worktree_state.py 位于 .../scripts/v5_2/persistence/worktree_state.py
-# 上溯 6 层得到 /workspace/（包含 核聚变开源贡献系统/ 的目录）
-#   /workspace/核聚变开源贡献系统/自动化PR系统核心/scripts/v5_2/persistence/
-#   ↑0                                 ↑scripts      ↑v5_2    ↑parent
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
-# V5.2：把 V5_1 目录改名为 V5_2；WORKTREE_BASE 现为绝对路径，cwd 不再影响
-WORKTREE_BASE = str(_REPO_ROOT / "核聚变开源贡献系统" / "V5_2" / "WORKTREES")
+# V5.2 first-principles 修复：自动定位 HJB git 仓库根（与 orchestrator.py 同步）
+# 旧版用 `Path(__file__).resolve().parent × 6` 硬编码层数，在不同部署位置会错：
+#   - /workspace/核聚变开源贡献系统/.../persistence/worktree_state.py  → 6 层 = /workspace/ → WORKTREES 在 /workspace/... ✗
+#   - /workspace/HJB/HJB/核聚变开源贡献系统/.../persistence/worktree_state.py → 6 层 = /workspace/HJB/ → WORKTREES 在 /workspace/HJB/... ✓
+# 修法：从 __file__ 上溯找最近包含 .git/ 的目录；找不到再 fallback。
+def _find_hjb_repo(start: Path) -> "Path | None":
+    cur = start.resolve()
+    for _ in range(10):
+        if (cur / ".git").exists():
+            return cur
+        if cur.parent == cur:
+            return None
+        cur = cur.parent
+    return None
+
+_hjb_auto = _find_hjb_repo(Path(__file__))
+_HJB_REPO = (
+    __import__("os").environ.get("HJB_REPO_ROOT")
+    or (str(_hjb_auto) if _hjb_auto else None)
+    or str(Path(__file__).resolve().parent.parent.parent.parent.parent.parent / "HJB")
+)
+# WORKTREES 必须在 HJB git 仓库里（被 git tracked & pushed）
+WORKTREE_BASE = str(Path(_HJB_REPO) / "核聚变开源贡献系统" / "V5_2" / "WORKTREES")
+# 兼容旧调用：_REPO_ROOT 仍然导出
+_REPO_ROOT = str(Path(_HJB_REPO).parent)
 
 
 def worktree_dir(pr_id: str, root: str = ".") -> str:
@@ -64,9 +81,10 @@ def load_state(pr_id: str, root: str = ".") -> Optional[PRWorktree]:
     # V5.2 first-principles 修复：把旧版 relative notes_dir 升级为绝对路径
     # （V5.1 之前写出的 notes_dir 形如 "核聚变开源贡献系统/V5_2/WORKTREES/..."，
     #   在新 cwd 下会找不到；统一为绝对路径后，cwd 无关）
+    # 用 _HJB_REPO 拼（不是 _REPO_ROOT，避免路径少一层 /HJB）
     _notes_dir = raw.get("notes_dir", "")
     if _notes_dir and not os.path.isabs(_notes_dir):
-        _notes_dir = str(_REPO_ROOT / _notes_dir)
+        _notes_dir = str(Path(_HJB_REPO) / _notes_dir)
     wt = PRWorktree(
         pr_id=raw["pr_id"],
         project=raw["project"],
@@ -153,9 +171,9 @@ def init_worktree(pr_id: str, project: str, paper_id: str, paper_title: str,
         state=PRState.DECOMPOSING,
         created_at=datetime.utcnow().isoformat() + "Z",
         updated_at=datetime.utcnow().isoformat() + "Z",
-        # V5.2 first-principles 修复：notes_dir 改为绝对路径（用 repo root 拼），
+        # V5.2 first-principles 修复：notes_dir 改为绝对路径（用 HJB repo 拼），
         # 不再是 cwd-relative，否则 executor 在不同 cwd 下会写到错的位置
-        notes_dir=str(_REPO_ROOT / "核聚变开源贡献系统" / "V5_2" / "WORKTREES" / pr_id / "notes"),
+        notes_dir=str(Path(_HJB_REPO) / "核聚变开源贡献系统" / "V5_2" / "WORKTREES" / pr_id / "notes"),
         pr_branch=f"pr/{project}/{paper_id}",
         compute_density="default",
     )

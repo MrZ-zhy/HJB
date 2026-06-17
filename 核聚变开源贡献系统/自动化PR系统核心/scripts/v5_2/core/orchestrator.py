@@ -42,18 +42,31 @@ from persistence.worktree_state import list_all_worktrees, save_state
 from pr_worktree.executor import execute_subtask_iteration
 
 
-# V5.2 first-principles 修复：基于 __file__ 定位 repo root
-# core/orchestrator.py 位于 .../scripts/v5_2/core/orchestrator.py
-# 上溯 6 层得到 /workspace/（包含 核聚变开源贡献系统/ 的目录）
-#   /workspace/核聚变开源贡献系统/自动化PR系统核心/scripts/v5_2/core/
-#   ↑0                                 ↑scripts      ↑v5_2
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
-# HJB git 仓库根：与 _REPO_ROOT 同级的 HJB 子目录（不是 _REPO_ROOT/HJB）
-# 之前错把 HJB 当成 _REPO_ROOT 子目录（"/workspace/核聚变开源贡献系统/HJB"），
-# 实际位置是 "/workspace/HJB"——HJB 仓库与 核聚变开源贡献系统/ 是同级兄弟。
-# 允许 HJB_REPO 环境变量覆盖（CI/容器里可能装到别处）。
-# V5.2 必须在 HJB_REPO_ROOT 定义之后才能引用它；保留 None 哨兵 + 模块底部二次绑定。
-HJB_REPO_ROOT = os.environ.get("HJB_REPO_ROOT") or str(_REPO_ROOT / "HJB")
+# V5.2 first-principles 修复：自动定位 HJB git 仓库根
+# 旧版用 `Path(__file__).resolve().parent × 6` 硬编码层数，在不同部署位置会错：
+#   - /workspace/核聚变开源贡献系统/.../core/orchestrator.py  → 6 层 = /workspace/ → HJB = /workspace/HJB ✓
+#   - /workspace/HJB/HJB/核聚变开源贡献系统/.../core/orchestrator.py → 6 层 = /workspace/HJB/ → HJB = /workspace/HJB/HJB ✗
+# 修法：从 __file__ 上溯找最近包含 .git/ 的目录，作为 HJB repo 根；
+#       找不到再 fallback 到 HJB_REPO_ROOT 环境变量 / _REPO_ROOT / "HJB" 兜底。
+def _find_hjb_repo(start: Path) -> Optional[Path]:
+    cur = start.resolve()
+    for _ in range(10):  # 最多上溯 10 层
+        if (cur / ".git").exists():
+            return cur
+        if cur.parent == cur:
+            return None
+        cur = cur.parent
+    return None
+
+_hjb_auto = _find_hjb_repo(Path(__file__))
+HJB_REPO_ROOT = (
+    os.environ.get("HJB_REPO_ROOT")
+    or (str(_hjb_auto) if _hjb_auto else None)
+    or str(Path(__file__).resolve().parent.parent.parent.parent.parent.parent / "HJB")
+)
+# _REPO_ROOT 保留作为兼容（worktree_state 等模块仍引用它），定义为 HJB_REPO_ROOT 的父目录
+# （即 HJB 仓库与 核聚变开源贡献系统/ 的共同父目录）
+_REPO_ROOT = str(Path(HJB_REPO_ROOT).parent)
 # V5.2 first-principles 修复：进度表实际在 HJB git 仓库里（被 git tracked），
 # 不是 _REPO_ROOT/核聚变开源贡献系统/ 那个独立目录。旧版错用 _REPO_ROOT 导致
 # 每次 tick 把 heartbeat 写到一个 git 仓库外、最终被 git add -A 忽略的文件，
