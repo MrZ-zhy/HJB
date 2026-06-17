@@ -78,7 +78,7 @@ git pull --rebase origin main 2>&1 | tail -3 >&2 || {
 # .env.local：fallback 兜底，.gitignore 屏蔽
 echo "GITHUB_TOKEN=${GITHUB_TOKEN}" > .env.local
 
-echo "[entry] env ok, HEAD=$(git rev-parse --short HEAD), token=***${GITHUB_TOKEN: -4}"
+echo "[entry] env ok, HEAD=$(git rev-parse --short HEAD), token=***${GITHUB_TOKEN: -4}" >&2
 
 # ── Step 1-7: V5.2 统一入口 ──
 CMD="${1:-tick}"
