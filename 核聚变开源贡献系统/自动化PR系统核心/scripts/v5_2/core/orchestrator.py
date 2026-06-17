@@ -48,13 +48,17 @@ from pr_worktree.executor import execute_subtask_iteration
 #   /workspace/核聚变开源贡献系统/自动化PR系统核心/scripts/v5_2/core/
 #   ↑0                                 ↑scripts      ↑v5_2
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
-# V5.2：进度表绝对路径（cwd 无关）
-MAIN_PROGRESS_TABLE = str(_REPO_ROOT / "核聚变开源贡献系统" / "进度表.md")
 # HJB git 仓库根：与 _REPO_ROOT 同级的 HJB 子目录（不是 _REPO_ROOT/HJB）
 # 之前错把 HJB 当成 _REPO_ROOT 子目录（"/workspace/核聚变开源贡献系统/HJB"），
 # 实际位置是 "/workspace/HJB"——HJB 仓库与 核聚变开源贡献系统/ 是同级兄弟。
 # 允许 HJB_REPO 环境变量覆盖（CI/容器里可能装到别处）。
+# V5.2 必须在 HJB_REPO_ROOT 定义之后才能引用它；保留 None 哨兵 + 模块底部二次绑定。
 HJB_REPO_ROOT = os.environ.get("HJB_REPO_ROOT") or str(_REPO_ROOT / "HJB")
+# V5.2 first-principles 修复：进度表实际在 HJB git 仓库里（被 git tracked），
+# 不是 _REPO_ROOT/核聚变开源贡献系统/ 那个独立目录。旧版错用 _REPO_ROOT 导致
+# 每次 tick 把 heartbeat 写到一个 git 仓库外、最终被 git add -A 忽略的文件，
+# 造成 "nothing to commit" 假错 + 进度表永不更新。改为 HJB_REPO_ROOT。
+MAIN_PROGRESS_TABLE = str(Path(HJB_REPO_ROOT) / "核聚变开源贡献系统" / "进度表.md")
 
 
 # V5.2 项目元数据（沿用 V5.1）
